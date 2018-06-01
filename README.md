@@ -25,4 +25,9 @@ A relational database is a set of tables. Each table consists of rows. A row is 
 Database normalization is to organize the database so as to minimize redunduncy. It involves decomposing tables utilizing foreign keys (a field in one table that uniquely identifies a row of another table). The drawback is performance, joins are expensive.
 
 ### JOIN
-Join is used to combine the results of two tables. To perform a join, each of the tables must have at least one field that will be used to find matching records from the other table. INNER JOIN: The result set would contain only the data where the criteria match. OUTER JOIN: The result set would also contain records that have no matching in the other table. The unmatched field will have a NULL value. LEFT OUTER JOIN: The result will contain all records from the left table regardless of match. RIGHT OUTER JOIN: The result will contain all records from the right table regardless of match. FULL OUTER JOIN: The result will contain all records from both the left and right table regardless of match.
+Join is used to combine the results of two tables. To perform a join, each of the tables must have at least one field that will be used to find matching records from the other table. 
+INNER JOIN: The result set would contain only the data where the criteria match.<br/>
+OUTER JOIN: The result set would also contain records that have no matching. The unmatched field will have a NULL value.<br/> 
+LEFT OUTER JOIN: The result will contain all records from the left table regardless of match.<br/>
+RIGHT OUTER JOIN: The result will contain all records from the right table regardless of match.<br/>
+FULL OUTER JOIN: The result will contain all records from both the left and right table regardless of match.<br/>
