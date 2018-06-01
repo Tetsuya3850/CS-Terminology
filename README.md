@@ -26,8 +26,8 @@ Database normalization is to organize the database so as to minimize redunduncy.
 
 ### JOIN
 Join is used to combine the results of two tables. To perform a join, each of the tables must have at least one field that will be used to find matching records from the other table.<br/>
-INNER JOIN: The result set would contain only the data where the criteria match.<br/>
-OUTER JOIN: The result set also contains records that have no matching. The unmatched field will have a NULL value.<br/> 
-LEFT OUTER JOIN: The result will contain all records from the left table regardless of match.<br/>
-RIGHT OUTER JOIN: The result will contain all records from the right table regardless of match.<br/>
-FULL OUTER JOIN: The result will contain all records from both the left and right table regardless of match.<br/>
+Inner Join: The result set would contain only the data where the criteria match.<br/>
+Outer Join: The result set also contains records that have no matching. The unmatched field will have a NULL value.<br/> 
+Left Outer Join: The result will contain all records from the left table regardless of match.<br/>
+Rgith Outer Join: The result will contain all records from the right table regardless of match.<br/>
+Full Outer Join: The result will contain all records from both the left and right table regardless of match.<br/>
