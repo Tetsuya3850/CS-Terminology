@@ -45,6 +45,11 @@ Left Outer Join: The result will contain all records from the left table regardl
 Rgith Outer Join: The result will contain all records from the right table regardless of match.<br/>
 Full Outer Join: The result will contain all records from both the left and right table regardless of match.<br/>
 
+## Web Programming
+
+### MVC
+The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
+
 ## JavaScript
 
 ### Contrast Prototypal Inheritance with Class Inheritance
