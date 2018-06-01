@@ -15,6 +15,12 @@ HTTPS is HTTP with SSL encryption.
 ### DNS
 DNS is the system which translates domain names to numerical IP addresses. For example, www.google.com translates to 216.58.218.110. DNS is implemented as a distributed directory service. Each DNS server stores a database of domain names to IP addresses. If it cannot find a domain name being queried in this database, it forwards the request to other DNS servers. To improve performance, caching is heavily used.
 
+## Object Oriented Programming
+
+## Favor Composition Over Inheritance
+Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
+
+
 ## Database
 
 ### Relational Database
@@ -33,6 +39,9 @@ Rgith Outer Join: The result will contain all records from the right table regar
 Full Outer Join: The result will contain all records from both the left and right table regardless of match.<br/>
 
 ## JavaScript
+
+### Contrast Prototypal Inheritance with Class Inheritance
+In class inheritance, instances inherit from classes and create hierarchical sub-class relationships. Instances are typically instantiated via constructor functions with the 'new' keyword. In prototypal inheritance, instances inherit directly from other objects and may be composed from many different objects, allowing easy selective inheritance. Instances are typically instantiated via factory functions or 'Object.create()'.
 
 ### == and ===
 == allows coercion in the equality comparison
