@@ -17,8 +17,13 @@ DNS is the system which translates domain names to numerical IP addresses. For e
 
 ## Object Oriented Programming
 
-## Favor Composition Over Inheritance
+### Favor Composition Over Inheritance
 Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
+
+## System Design
+
+### Stateless/Stateful System
+A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
 
 
 ## Database
