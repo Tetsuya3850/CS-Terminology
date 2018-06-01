@@ -25,6 +25,8 @@ Code reuse should be achieved by assembling smaller units of functionality inste
 ### Stateless/Stateful System
 A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
 
+### Read-Heavy/Write-Heavy System
+
 
 ## Database
 
