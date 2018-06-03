@@ -4,21 +4,9 @@
 HTTP, the Hyper Text Transfer Protocol, is the application protocol for transmitting hypermedia documents, such as HTML. However, due to its extensibility, it is also used for fetching images and videos or to post content to servers, like form results. After the original request to fetch the HTML document, it then parses this file and fetches additional requests corresponding to execution scripts, layout information (CSS) to display, and sub-resources contained within the page (usually images and videos). The Web browser then mixes these resources to present to the user a complete document, the Web page. Scripts executed by the browser can fetch more resources in later phases and the browser updates the Web page accordingly. HTTP follows a client-server model, with a client (web browser) opening a connection to make a request, then waiting until it receives a response. HTTP is a stateless protocol, meaning that the server does not keep any data between two requests. However, HTTP cookies allow the use of stateful sessions. 
 
 ### HTTP Messages
-Requests consists of the following elements:
+Requests consists of an HTTP method (like GET, POST), the path of the resource to fetch, the version of the HTTP protocol, optional headers and a body(for POST). Responses consists of the version of the HTTP protocol, a status code indicating if the request has been successful or not, a status message (short description of the status code) headers and optionally, a body containing the fetched resource.
 
-An HTTP method, usually a verb like GET, POST or a noun like OPTIONS or HEAD that defines the operation the client wants to perform. Typically, a client wants to fetch a resource (using GET) or post the value of an HTML form (using POST), though more operations may be needed in other cases.
-The path of the resource to fetch; the URL of the resource stripped from elements that are obvious from the context, for example without the protocol (http://), the domain (here developer.mozilla.org), or the TCP port (here 80).
-The version of the HTTP protocol.
-Optional headers that convey additional information for the servers.
-Or a body, for some methods like POST, similar to those in responses, which contain the resource sent.
-
-Responses consist of the following elements:
-
-The version of the HTTP protocol they follow.
-A status code, indicating if the request has been successful, or not, and why.
-A status message, a non-authoritative short description of the status code.
-HTTP headers, like those for requests.
-Optionally, a body containing the fetched resource.
+### HTTP/2
 
 ### HTTPS
 HTTPS is HTTP with SSL encryption. 
