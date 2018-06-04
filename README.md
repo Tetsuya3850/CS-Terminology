@@ -129,11 +129,23 @@ Full Outer Join: The result will contain all records from both the left and righ
 
 ## Web Programming
 
+### Cross Browser Testing
+・Use caniuse.com to check for feature support.
+・Autoprefixer for automatic vendor prefix insertion.
+・Feature detection using Modernizr.
+・Use CSS Feature queries @support
 
+## CSS
 
-### Resetting/Normalizing CSS
+### Resetting/Normalizing
 Resetting: Strip all default browser styling on elements.
-Normalizing: Preserves useful default styles rather than "unstyling" everything. 
+Normalizing: Preserves useful default styles rather than "unstyling" everything.
+
+### Position relative, absolute, fixed, static
+relative:The element's position is adjusted relative to itself, without changing layout (and thus leaving a gap for the element where it would have been had it not been positioned).<br/>
+absolute - The element is removed from the flow of the page and positioned at a specified position relative to its closest positioned ancestor if any, or otherwise relative to the initial containing block. Absolutely positioned boxes can have margins, and they do not collapse with any other margins. These elements do not affect the position of other elements.<br/>
+fixed - The element is removed from the flow of the page and positioned at a specified position relative to the viewport and doesn't move when scrolled.<br/>
+static - The default position; the element will flow into the page as it normally would. The top, right, bottom, left and z-index properties do not apply.<br/>
 
 
 ## Performance
