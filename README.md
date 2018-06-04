@@ -49,6 +49,23 @@ A stateless system's output depends only on the input. A stateful system's outpu
 
 ### Read-Heavy/Write-Heavy System
 
+## Programming Language
+
+### Closure
+Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
+```
+function foo(){
+  var a = 2;
+  function bar(){
+    console.log(a);
+  }
+  return bar;
+}
+
+var baz = foo();
+
+baz(); // 2
+```
 
 ## Database
 
@@ -85,7 +102,14 @@ Normalizing: Preserves useful default styles rather than "unstyling" everything.
 
 ## JavaScript
 
-### Contrast Prototypal Inheritance with Class Inheritance
+### this
+“this” is not an author-time binding but a runtime binding. It is contextual based on the conditions of the function's invocation. this binding has nothing to do with where a function is declared, but has instead everything to do with the manner in which the function is called. When a function is invoked, an activation record, otherwise known as an execution context, is created. This record contains information about where the function was called from (the call-stack), how the function was invoked, what parameters were passed, etc. One of the properties of this record is this reference which will be used for the duration of that function's execution. Determining the this binding for an executing function requires finding the direct call-site of that function. Once examined, four rules can be applied to the call-site, in this order of precedence:
+1 Called with new? Use the newly constructed object.
+2 Called with call or apply (or bind)? Use the specified object.
+3 Called with a context object owning the call? Use that context object.
+4 Default: undefined in strict mode, global object otherwise.
+
+### Prototypal Inheritance V.S. Class Inheritance
 In class inheritance, instances inherit from classes and create hierarchical sub-class relationships. Instances are typically instantiated via constructor functions with the 'new' keyword. In prototypal inheritance, instances inherit directly from other objects and may be composed from many different objects, allowing easy selective inheritance. Instances are typically instantiated via factory functions or 'Object.create()'.
 
 ### == and ===
