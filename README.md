@@ -63,6 +63,7 @@ Writing to the screen, a file or to the network<br/>
 ## System Design
 
 ### Load Balancing
+Random Allocation, Round Robin, Weighted
 
 ### Horizontal / Vertical Scaling
 Scale up, Scale out.
@@ -71,6 +72,41 @@ Scale up, Scale out.
 A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
 
 Maximal Troughput with Acceptable Latency
+
+### CAP Theorem
+Consistency, Availability, Partition Tolerance. You can only choose 2 at a given point in time.
+Centeralized system do not have partition tolerance, but have consistency and availability
+Distributed system will have network partition. Choose one of the rest.
+In practice there are only CP, AP. Which do you take, consistency or availability.
+
+### ACID Transaction
+Atomic, Consistent, Isolated, Durable
+
+Eventually Consistent
+
+### Replication
+Master-Slave(master can accept both read-writes slave accept only reads)
+Master-Master(both master can accept both read-writes)
+
+### Sharding
+Partitioning
+A-C, D-F, G-H,,,
+Replication
+have copies
+
+### NoSQL
+Key-Value Database
+Document Database
+Column Database
+Graph Database
+
+### MapReduce
+
+### HTTP Caching
+
+### Reverse Proxy
+
+### CDN
 
 ### Read-Heavy/Write-Heavy System
 
