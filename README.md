@@ -37,6 +37,9 @@ Cross-site scripting (XSS) is a security exploit which allows an attacker to inj
 ### CSRF
 CSRF (Cross-Site Request Forgery) is an attack that impersonates a trusted user and sends a website unwanted commands. This can be done, for example, by including malicious parameters in a URL behind a link that purports to go somewhere else.
 
+### SQL Injection
+SQL injection is a code injection technique that might destroy your database. SQL injection is the placement of malicious code in SQL statements, via web page input. SQL injection usually occurs when you ask a user for input, like their username/userid, and instead of a name/id, the user gives you an SQL statement that you will unknowingly run on your database.To protect a web site from SQL injection, you can use SQL parameters. SQL parameters are values that are added to an SQL query at execution time, in a controlled manner.
+
 ## Object Oriented Programming
 
 ### Favor Composition Over Inheritance
