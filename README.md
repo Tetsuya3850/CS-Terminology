@@ -160,6 +160,8 @@ CDNs take the burden of serving static media off of your application servers (wh
 
 In a typical CDN setup, a request will first ask your CDN for a piece of static media, the CDN will serve that content if it has it locally available (HTTP headers are used for configuring how the CDN caches a given piece of content). If it isn't available, the CDN will query your servers for the file and then cache it locally and serve it to the requesting user (in this configuration they are acting as a read-through cache).
 
+a server CDN uses to store content in many locations so content is geographically/physically closer to users, resulting in faster performance
+
 ### Read-Heavy/Write-Heavy System
 
 ## Programming Language
