@@ -104,6 +104,9 @@ c; // [1, 2, 3, 4]
 d; // [1, 2, 3, 4]
 ```
 
+### Garbage Collection
+Garbage Collection is the process of finding data objects in a running program that cannot be accessed in the future, and to reclaim the resources, particulary memory, used by those objects. In Java, C#, Python and many other languages, garbage collection happens automatically. In contrast, in writing C, the programmer is responsible to know when to allocate and deallocate memory.
+
 ## Database
 
 ### Relational Database
