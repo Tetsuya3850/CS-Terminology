@@ -26,6 +26,8 @@ CORS (Cross-Origin Resource Sharing) is a mechanism that uses additional HTTP he
 ### Cookie
 Cookie is a small piece of data that a server sends to the user's web browser. The browser may store it and send it back with the next request to the same server. It remembers stateful information for the stateless HTTP protocol. Cookies are mainly used for session management (logins, shopping carts, game scores), personalization(user preferences and themes), and tracking(recording and analyzing user behavior).
 
+### Bandwidth Latency
+
 ## Security
 
 ### DoS Attack
@@ -60,8 +62,15 @@ Writing to the screen, a file or to the network<br/>
 
 ## System Design
 
+### Load Balancing
+
+### Horizontal / Vertical Scaling
+Scale up, Scale out.
+
 ### Stateless/Stateful System
 A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
+
+Maximal Troughput with Acceptable Latency
 
 ### Read-Heavy/Write-Heavy System
 
