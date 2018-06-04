@@ -42,6 +42,16 @@ CSRF (Cross-Site Request Forgery) is an attack that impersonates a trusted user 
 ### Favor Composition Over Inheritance
 Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
 
+## Functional Programming
+
+### Pure Function
+A function that given the same input, will always return the same output. Produces no side effects (it can’t alter any external state). Since they are independent of outside state, bugs that have to do with shared mutable state can be avoided. 
+
+### Side Effect
+Modifying external variable or object property (e.g., a global variable, or a variable in the parent function)<br/>
+Logging to the console<br/>
+Writing to the screen, a file or to the network<br/>
+
 ## System Design
 
 ### Stateless/Stateful System
@@ -50,6 +60,9 @@ A stateless system's output depends only on the input. A stateful system's outpu
 ### Read-Heavy/Write-Heavy System
 
 ## Programming Language
+
+### Scope
+Scope is the set of rules that determines where and how a variable can be looked-up. 
 
 ### Closure
 Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
@@ -65,6 +78,27 @@ function foo(){
 var baz = foo();
 
 baz(); // 2
+```
+
+### Type
+A type is an intrinsic, built-in set of characteristics that uniquely identifies the behavior of a particular value and distinguishes it from other values, both to the engine and to the developer.
+
+### Value copy / Reference copy
+Primitives are always assigned/passed by value-copy: null, undefined, string, number, boolean, and ES6's symbol.<br/>
+Compound values (object and functions) always create a copy of the reference on assignment or passing.
+
+```
+var a = 2;
+var b = a;
+b++;
+a; // 2
+b; // 3
+
+var c = [1, 2, 3];
+var d = c;
+d.push(4);
+c; // [1, 2, 3, 4]
+d; // [1, 2, 3, 4]
 ```
 
 ## Database
@@ -104,10 +138,10 @@ Normalizing: Preserves useful default styles rather than "unstyling" everything.
 
 ### this
 “this” is not an author-time binding but a runtime binding. It is contextual based on the conditions of the function's invocation. this binding has nothing to do with where a function is declared, but has instead everything to do with the manner in which the function is called. When a function is invoked, an activation record, otherwise known as an execution context, is created. This record contains information about where the function was called from (the call-stack), how the function was invoked, what parameters were passed, etc. One of the properties of this record is this reference which will be used for the duration of that function's execution. Determining the this binding for an executing function requires finding the direct call-site of that function. Once examined, four rules can be applied to the call-site, in this order of precedence:
-1 Called with new? Use the newly constructed object.
-2 Called with call or apply (or bind)? Use the specified object.
-3 Called with a context object owning the call? Use that context object.
-4 Default: undefined in strict mode, global object otherwise.
+1 Called with new? Use the newly constructed object.<br/>
+2 Called with call or apply (or bind)? Use the specified object.<br/>
+3 Called with a context object owning the call? Use that context object.<br/>
+4 Default: undefined in strict mode, global object otherwise.<br/>
 
 ### Prototypal Inheritance V.S. Class Inheritance
 In class inheritance, instances inherit from classes and create hierarchical sub-class relationships. Instances are typically instantiated via constructor functions with the 'new' keyword. In prototypal inheritance, instances inherit directly from other objects and may be composed from many different objects, allowing easy selective inheritance. Instances are typically instantiated via factory functions or 'Object.create()'.
