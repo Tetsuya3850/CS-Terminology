@@ -42,6 +42,9 @@ CSRF (Cross-Site Request Forgery) is an attack that impersonates a trusted user 
 ### Favor Composition Over Inheritance
 Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
 
+### MVC
+The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
+
 ## Functional Programming
 
 ### Pure Function
@@ -120,8 +123,7 @@ Full Outer Join: The result will contain all records from both the left and righ
 
 ## Web Programming
 
-### MVC
-The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
+
 
 ### Resetting/Normalizing CSS
 Resetting: Strip all default browser styling on elements.
@@ -157,3 +159,11 @@ All others are Truthy values.
 ### NaN
 A special value given when Number coercion fails.
 
+### var, let, const
+While var is function scoped, let and const are block scoped. const creates a variable name binding which can’t be reassigned (it does not create immutable objects, you can still change the properties of the object). let can be reassigned.
+
+### Promise
+A promise is an synchronously returned object from an asynchronous function that may produce a single value some time in the future: either a resolved value, or a reason that it’s not resolved (e.g., a network error occurred). A promise may be in one of 3 possible states: fulfilled, rejected, or pending. Promise users can attach callbacks to handle the fulfilled value or the reason for rejection.
+
+### Asynchronous programming
+Asynchronous programming means that the engine runs in an event loop. When a blocking operation is needed, the request is started, and the code keeps running without blocking for the result. When the response is ready, an interrupt is fired, which causes an event handler to be run, where the control flow continues. In this way, a single program thread can handle many concurrent operations.
