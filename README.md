@@ -135,9 +135,7 @@ Use cases such as inexpensive calculations and realtime workflows might be bette
 
 
 ### Horizontal / Vertical Scaling
-Scale up, Scale out.
-
-Scaling vertically means adding more resources to an individual server. This might mean adding more hard drives so a single server can contain the entire data set, or moving the computation to a bigger server with a faster CPU or more memory. In each case, vertical scaling is accomplished by making the individual resource capable of handling more on its own.
+Scaling vertically means adding more resources to an individual server. This might mean adding more hard drives so a single server can contain the entire data set, or moving the computation to a bigger server with a faster CPU or more memory. In each case, vertical scaling is accomplished by making the individual resource capable of handling more on its own. However, the best machine available in market is the limit.
 
 Scaling horizontally, on the other hand, is to add more nodes. This might be a second server to store parts of the data set, or splitting the operation or load across some additional nodes. One of the more common techniques is to break up your services into partitions, or shards. The partitions can be distributed such that each logical set of functionality is separate; this could be done by geographic boundaries, or by another criteria like non-paying versus paying users.
 
