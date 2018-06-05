@@ -100,8 +100,19 @@ Strong consistency (After a write, reads will see it. Data is replicated synchro
 With active-passive fail-over, heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service. The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. Only the active server handles traffic. In active-active, both servers are managing traffic, spreading the load between them. If the servers are public-facing, the DNS would need to know about the public IPs of both servers. If the servers are internal-facing, application logic would need to know about both servers. Disadvantages of failover are, more hardware and additional complexity, potential loss of data if the active system fails before any newly written data can be replicated to the passive.
 
 ### Replication
-Master-Slave(master can accept both read-writes slave accept only reads)
-Master-Master(both master can accept both read-writes)
+Master-Slave: The master serves reads and writes, replicating writes to one or more slaves, which serve only reads. Slaves can also replicate to additional slaves in a tree-like fashion. If the master goes offline, the system can continue to operate in read-only mode until a slave is promoted to a master or a new master is provisioned.<br/>
+Master-Master: Both masters serve reads and writes and coordinate with each other on writes. If either master goes down, the system can continue to operate with both reads and writes. Most master-master systems are either loosely consistent (violating ACID) or have increased write latency due to synchronization.<br/>
+Disadvantages of replication include, potential loss of data if the master fails before any newly written data can be replicated to other nodes, read replicas can get bogged down with replaying writes and can't do as many reads when there a lot of writes, more read slaves leads to greater replication lag.
+
+### Federation
+Federation (or functional partitioning) splits up databases by function. For example, instead of a single, monolithic database, you could have three databases: forums, users, and products, resulting in less read and write traffic to each database and therefore less replication lag. Smaller databases result in more data that can fit in memory, which in turn results in more cache hits due to improved cache locality. With no single central master serializing writes you can write in parallel, increasing throughput. Disadvantages include the necessity to update application logic to determine which database to read and write and joining data from two databases is more complex with a server link.
+
+### Sharding
+Sharding distributes data across different databases such that each database can only manage a subset of the data. Taking a users database as an example, as the number of users increases, more shards are added to the cluster. Sharding results in less read and write traffic, less replication, and more cache hits. Index size is also reduced, which generally improves performance with faster queries. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. Like federation, there is no single central master serializing writes, allowing you to write in parallel with increased throughput. Common ways to shard a table of users is either through the user's last name initial or the user's geographic location. Disadvantages include, need to update your application logic to work with shards, which could result in complex SQL queries, data distribution can become lopsided in a shard ( a set of power users on a shard could result in increased load to that shard compared to others), rebalancing adds additional complexity (sharding function based on consistent hashing can reduce the amount of transferred data, joining data from multiple shards is more complex.
+
+### Denormalization
+Denormalization improves read performance at the expense of some write performance. Redundant copies of the data are written in multiple tables to avoid expensive joins. Once data becomes distributed with techniques such as federation and sharding, managing joins across data centers further increases complexity. Disadvantages include, data duplication, a denormalized database under heavy write load might perform worse than its normalized counterpart.
+
 
 ### Reverse Proxy
 A reverse proxy is a web server that centralizes internal services and provides unified interfaces to the public. Requests from clients are forwarded to a server that can fulfill it before the reverse proxy returns the server's response to the client. Additional benefits include, increased security (hide information about backend servers, blacklist IPs, limit number of connections per client), increased scalability and flexibility (clients only see the reverse proxy's IP, allowing you to scale servers or change their configuration), SSL termination (decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), compress server responses, return the response for cached requests, serve static content directly. Load balancing solutions such as HAProxy can support reverse proxying as well.
@@ -112,19 +123,12 @@ Separating out the web layer from the application layer (also known as platform 
 
 
 ### ACID Transaction
-Atomic, Consistent, Isolated, Durable
+ACID is a set of properties of relational database transactions.
+Atomicity - Each transaction is all or nothing<br/>
+Consistency - Any transaction will bring the database from one valid state to another<br/>
+Isolation - Executing transactions concurrently has the same results as if the transactions were executed serially<br/>
+Durability - Once a transaction has been committed, it will remain so<br/>
 
-Eventually Consistent
-
-
-
-### Sharding
-Partitioning
-A-C, D-F, G-H,,,
-Replication
-have copies
-
-### Federation
 
 ### NoSQL
 Key-Value Database
