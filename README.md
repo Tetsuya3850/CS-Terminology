@@ -18,7 +18,7 @@ TCP (Transmission Control Protocol) is responsible for routing application proto
 IP (Internet Protocol) address is a network addressable location. Each IP address must be unique within its network. The addresses are in the form nnn.nnn.nnn.nnn where nnn must be a number from 0 - 255. Any Internet-connected computer can be reached through a public IP Address, which consists of 32 bits for IPv4 (they are usually written as four numbers between 0 and 255, separated by dots (e.g., 173.194.121.32) or which consists of 128 bits for IPv6 (they are usually written as eight groups of 4 hexadecimal numbers, separated by colons (e.g., 2027:0da8:8b73:0000:0000:8a2e:0370:1337). Computers can handle those addresses easily, but people have a hard time finding out who's running the server or what service the website offers. IP addresses are hard to remember and might change over time. To solve all those problems we use human-readable addresses called domain names.
 
 ### DNS
-DNS is a distributed database system which translates human-friendly domain names to numerical IP addresses. For example, www.google.com translates to 216.58.218.110. DNS is implemented as a distributed directory service. Each DNS server stores a database of domain names to IP addresses. If it cannot find a domain name being queried in this database, it forwards the request to other DNS servers. To improve performance, caching is heavily used.
+DNS is a distributed database system which translates human-friendly domain names to numerical IP addresses. For example, www.google.com translates to 216.58.218.110. DNS is implemented as a distributed directory service. Each DNS server stores a database of domain names to IP addresses. If it cannot find a domain name being queried in this database, it forwards the request to other DNS servers. To improve performance, caching is heavily used. DNS results can also be cached by your browser or OS for a certain period of time,
 
 ### CORS
 CORS (Cross-Origin Resource Sharing) is a mechanism that uses additional HTTP headers to let a user agent gain permission to access selected resources from a server on a different origin (domain) than the site currently in use. A user agent makes a cross-origin HTTP request when it requests a resource from a different domain, protocol, or port than the one from which the current document originated. For security reasons, browsers restrict cross-origin HTTP requests initiated from within scripts. For example, XMLHttpRequest and the Fetch API follow the same-origin policy. This means that a web application using those APIs can only request HTTP resources from the same domain the application was loaded from unless CORS headers are used.
@@ -63,63 +63,60 @@ Writing to the screen, a file or to the network<br/>
 ## System Design
 
 ### Load Balancing
-Random Allocation, Round Robin, Weighted
-
-Load balancing is the process of spreading requests across multiple resources according to some metric (random, round-robin, random with weighting for machine capacity, etc) and their current status (available for requests, not responding, elevated error rate, etc).
-
-Load needs to be balanced between user requests and your web servers, but must also be balanced at every stage to achieve full scalability and redundancy for your system. A moderately large system may balance load at three layers:
-
-user to your web servers,
-web servers to an internal platform layer,
-internal platform layer to your database.
-
-HAProxy is a great example of this approach. It runs locally on each of your boxes, and each service you want to load-balance has a locally bound port. For example, you might have your platform machines accessible via localhost:9000, your database read-pool at localhost:9001 and your database write-pool at localhost:9002. HAProxy manages healthchecks and will remove and return machines to those pools according to your configuration, as well as balancing across all the machines in those pools as well.
-
+Load balancing is the process of spreading requests across multiple resources according to some metric (random, round-robin, session/cookies, random with weighting for machine capacity, etc) and their current status (available for requests, not responding, elevated error rate, etc) to achieve scalability and redundancy. A moderately large system may balance load at three layers, user to web servers, web servers to an internal platform layer, internal platform layer to database. Load balancers can be implmented with hardware or software, but the hardware tends to be costly. One famous software solution is HAProxy, where for each service you want to load-balance, a locally bound port should be configured. Additional benefits of load balancers include, SSL termination (Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), session persistence (issue cookies and route a specific client's requests to same instance if the web apps do not keep track of sessions). To protect against failures, it's common to set up multiple load balancers.
+ 
 ### Caching
-Caching consists of: precalculating results (e.g. the number of visits from each referring domain for the previous day), pre-generating expensive indexes (e.g. suggested stories based on a user's click history), and storing copies of frequently accessed data in a faster backend (e.g. Memcache instead of PostgreSQL.
+Caching consists of: precalculating results (e.g. the number of visits from each referring domain for the previous day), pre-generating expensive indexes (e.g. suggested stories based on a user's click history), and storing copies of frequently accessed data in a faster backend (e.g. Memcached instead of PostgreSQL.) Memcached and Redis are fast since they are in-memory, not disk. However, RAM space is generally far less than disk space, so you should only keep a hot subset of your data in cache. To decide which to hold, last recently used is a good strategy (recently requested data is likely to be requested again). By placing cache near to the front-end, it could  instantly serve the results and also mitigate the load to downstream backends. However, when the original data gets updated, relating cache data should be invalidated. The solution is, each time a value changes, write the new value into the cache (this is called a write-through cache) or simply delete the current value from the cache and allow a read-through cache to populate it later. Adding fixed expirations to cached data is also an important strategy. Multiple caches makes the problem yet trickier.
 
-The most potent--in terms of raw performance--caches you'll encounter are those which store their entire set of data in memory. Memcached and Redis are both examples of in-memory caches (caveat: Redis can be configured to store some data to disk). This is because accesses to RAM are orders of magnitude faster than those to disk.
-
-On the other hand, you'll generally have far less RAM available than disk space, so you'll need a strategy for only keeping the hot subset of your data in your memory cache. The most straightforward strategy is least recently used, and is employed by Memcache (and Redis as of 2.2 can be configured to employ it as well). LRU works by evicting less commonly used data in preference of more frequently used data, and is almost always an appropriate caching strategy.
-
-Caches take advantage of the locality of reference principle: recently requested data is likely to be requested again. They are used in almost every layer of computing: hardware, operating systems, web browsers, web applications and more. A cache is like short-term memory: it has a limited amount of space, but is typically faster than the original data source and contains the most recently accessed items. Caches can exist at all levels in architecture, but are often found at the level nearest to the front end, where they are implemented to return data quickly without taxing downstream levels.
-
-cache invalidation.
-
-If you're dealing with a single datacenter, it tends to be a straightforward problem, but it's easy to introduce errors if you have multiple codepaths writing to your database and cache (which is almost always going to happen if you don't go into writing the application with a caching strategy already in mind). At a high level, the solution is: each time a value changes, write the new value into the cache (this is called a write-through cache) or simply delete the current value from the cache and allow a read-through cache to populate it later (choosing between read and write through caches depends on your application's details, but generally I prefer write-through caches as they reduce likelihood of a stampede on your backend database).
-
-Invalidation becomes meaningfully more challenging for scenarios involving fuzzy queries (e.g if you are trying to add application level caching in-front of a full-text search engine like SOLR), or modifications to unknown number of elements (e.g. deleting all objects created more than a week ago).
-
-In those scenarios you have to consider relying fully on database caching, adding aggressive expirations to the cached data, or reworking your application's logic to avoid the issue (e.g. instead of DELETE FROM a WHERE..., retrieve all the items which match the criteria, invalidate the corresponding cache rows and then delete the rows by their primary key explicitly).
 
 ### Horizontal / Vertical Scaling
 Scale up, Scale out.
 
-Scaling vertically means adding more resources to an individual server. So for a very large data set, this might mean adding more (or bigger) hard drives so a single server can contain the entire data set. In the case of the compute operation, this could mean moving the computation to a bigger server with a faster CPU or more memory. In each case, vertical scaling is accomplished by making the individual resource capable of handling more on its own.
+Scaling vertically means adding more resources to an individual server. This might mean adding more hard drives so a single server can contain the entire data set, or moving the computation to a bigger server with a faster CPU or more memory. In each case, vertical scaling is accomplished by making the individual resource capable of handling more on its own.
 
-To scale horizontally, on the other hand, is to add more nodes. In the case of the large data set, this might be a second server to store parts of the data set, and for the computing resource it would mean splitting the operation or load across some additional nodes. To take full advantage of horizontal scaling, it should be included as an intrinsic design principle of the system architecture, otherwise it can be quite cumbersome to modify and separate out the context to make this possible.
+Scaling horizontally, on the other hand, is to add more nodes. This might be a second server to store parts of the data set, or splitting the operation or load across some additional nodes. One of the more common techniques is to break up your services into partitions, or shards. The partitions can be distributed such that each logical set of functionality is separate; this could be done by geographic boundaries, or by another criteria like non-paying versus paying users.
 
-When it comes to horizontal scaling, one of the more common techniques is to break up your services into partitions, or shards. The partitions can be distributed such that each logical set of functionality is separate; this could be done by geographic boundaries, or by another criteria like non-paying versus paying users. The advantage of these schemes is that they provide a service or data store with added capacity.
 
 ### Stateless/Stateful System
 A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
 
-Maximal Troughput with Acceptable Latency
+### Latency / Throughput
+Latency is the time to perform some action or to produce some result. Throughput is the number of such actions or results per unit of time. Generally, you should aim for maximal throughput with acceptable latency.
+
 
 ### CAP Theorem
-Consistency, Availability, Partition Tolerance. You can only choose 2 at a given point in time.
-Centeralized system do not have partition tolerance, but have consistency and availability
-Distributed system will have network partition. Choose one of the rest.
-In practice there are only CP, AP. Which do you take, consistency or availability.
+In a distributed computer system, you can only support two of the following guarantees:
+Consistency - Every read receives the most recent write or an error<br/>
+Availability - Every request receives a response, without guarantee that it contains the most recent version<br/>
+Partition Tolerance - The system continues to operate despite arbitrary partitioning due to network failures<br/>
+Networks aren't reliable, so you'll need to support partition tolerance. Therefore, the tradeoff is between consistency and availability. If you choose consistency, waiting for a response from the partitioned node might result in a timeout error. CP is a good choice if your business needs require atomic reads and writes. If you choose availability, responses return the most recent version of the data available on the a node, which might not be the latest. Writes might take some time to propagate when the partition is resolved. AP is a good choice if the business needs allow for eventual consistency or when the system needs to continue working despite external errors.
+
+### Consistency
+Weak consistency (After a write, reads may or may not see it. A best effort approach is taken.) is seen in systems such as memcached. Weak consistency works well in real time use cases such as VoIP, video chat, and realtime multiplayer games. For example, if you are on a phone call and lose reception for a few seconds, when you regain connection you do not hear what was spoken during connection loss.<br/>
+Eventual consistency (After a write, reads will eventually see it typically within milliseconds, data is replicated asynchronously.) This approach is seen in systems such as DNS and email. Eventual consistency works well in highly available systems.<br/>
+Strong consistency (After a write, reads will see it. Data is replicated synchronously.) This approach is seen in file systems and RDBMSes. Strong consistency works well in systems that need transactions.<br/>
+
+### Fail-Over
+With active-passive fail-over, heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service. The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. Only the active server handles traffic. In active-active, both servers are managing traffic, spreading the load between them. If the servers are public-facing, the DNS would need to know about the public IPs of both servers. If the servers are internal-facing, application logic would need to know about both servers. Disadvantages of failover are, more hardware and additional complexity, potential loss of data if the active system fails before any newly written data can be replicated to the passive.
+
+### Replication
+Master-Slave(master can accept both read-writes slave accept only reads)
+Master-Master(both master can accept both read-writes)
+
+### Reverse Proxy
+A reverse proxy is a web server that centralizes internal services and provides unified interfaces to the public. Requests from clients are forwarded to a server that can fulfill it before the reverse proxy returns the server's response to the client. Additional benefits include, increased security (hide information about backend servers, blacklist IPs, limit number of connections per client), increased scalability and flexibility (clients only see the reverse proxy's IP, allowing you to scale servers or change their configuration), SSL termination (decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), compress server responses, return the response for cached requests, serve static content directly. Load balancing solutions such as HAProxy can support reverse proxying as well.
+
+### Application Layer
+Separating out the web layer from the application layer (also known as platform layer) allows you to scale and configure both layers independently. Adding a new API results in adding application servers without necessarily adding additional web servers. The single responsibility principle advocates for small and autonomous services that work together. Small teams with small services can plan more aggressively for rapid growth. Related to this discussion are microservices, which can be described as a suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal. Systems such as Consul, Etcd, and Zookeeper can help services find each other by keeping track of registered names, addresses, and ports
+
+
 
 ### ACID Transaction
 Atomic, Consistent, Isolated, Durable
 
 Eventually Consistent
 
-### Replication
-Master-Slave(master can accept both read-writes slave accept only reads)
-Master-Master(both master can accept both read-writes)
+
 
 ### Sharding
 Partitioning
@@ -164,13 +161,7 @@ Second, adding a platform layer can be a way to reuse your infrastructure for mu
 Third, a sometimes underappreciated aspect of platform layers is that they make it easier to scale an organization. At their best, a platform exposes a crisp product-agnostic interface which masks implementation details. If done well, this allows multiple independent teams to develop utilizing the platform's capabilities, as well as another team implementing/optimizing the platform itself.
 
 ### CDN
-A particular kind of cache (some might argue with this usage of the term, but I find it fitting) which comes into play for sites serving large amounts of static media is the content distribution network.
-
-CDNs take the burden of serving static media off of your application servers (which are typically optimzed for serving dynamic pages rather than static media), and provide geographic distribution. Overall, your static assets will load more quickly and with less strain on your servers (but a new strain of business expense).
-
-In a typical CDN setup, a request will first ask your CDN for a piece of static media, the CDN will serve that content if it has it locally available (HTTP headers are used for configuring how the CDN caches a given piece of content). If it isn't available, the CDN will query your servers for the file and then cache it locally and serve it to the requesting user (in this configuration they are acting as a read-through cache).
-
-a server CDN uses to store content in many locations so content is geographically/physically closer to users, resulting in faster performance
+A content delivery network (CDN) is a globally distributed network of proxy servers, serving content from locations closer to the user. Generally, static files such as HTML/CSS/JS, photos, and videos are served. CDNs improve performance in two ways: Users receive content at data centers close to them. Your servers do not have to serve requests that the CDN fulfills. In a typical CDN setup, a request will first ask your CDN for a piece of static media, the CDN will serve that content if it has it locally available. If it isn't available, the CDN will query your servers for the file and then cache it locally and serve it to the requesting user.
 
 ### Read-Heavy/Write-Heavy System
 
