@@ -1,15 +1,10 @@
 ## Networking
 
 ### HTTP
-HTTP, the Hyper Text Transfer Protocol, is the application protocol for transmitting hypermedia documents, such as HTML. Due to its extensibility, it is also used for fetching images and videos or to post content to servers. After the original request to fetch the HTML document, the web browser parses the file and makes additional HTTP requests corresponding to execution scripts, layout information (CSS) to display, and sub-resources contained within the page (usually images and videos). HTTP follows a client-server model, with a client (web browser) opening a connection to make a request, then waiting until it receives a response. HTTP is a stateless protocol, meaning that the server does not keep any data between two requests (HTTP cookies enable stateful sessions).
+HTTP, the Hyper Text Transfer Protocol, is the application protocol for transmitting hypermedia documents, such as HTML. Due to its extensibility, it is also used for fetching images and videos or to post content to servers. After the original request to fetch the HTML document, the web browser parses the file and makes additional HTTP requests corresponding to execution scripts, layout information (CSS) to display, and sub-resources contained within the page (usually images and videos). HTTP follows a client-server model, with a client (web browser) opening a connection to make a request, then waiting until it receives a response. HTTP is a stateless protocol, meaning that the server does not keep any data between two requests (cookies enable stateful sessions). 
 
 ### HTTP Messages
-Requests consists of an HTTP method (like GET, POST), the path of the resource to fetch, the version of the HTTP protocol, optional headers and a body(for POST). Responses consists of the version of the HTTP protocol, a status code indicating if the request has been successful or not (ex. 200, 404), a status message (short description of the status code), headers and optionally a body containing the fetched resource.
-
-### HTTP/2
-
-### HTTPS
-HTTPS is HTTP with SSL encryption. 
+Requests consists of an HTTP method (like GET, POST), the path of the resource to fetch, the version of the HTTP protocol, optional headers and a body (for POST). Responses consists of the version of the HTTP protocol, a status code indicating if the request has been successful or not (ex. 200, 404), a status message (short description of the status code), headers and optionally a body containing the fetched resource.
 
 ### TCP/IP
 TCP (Transmission Control Protocol) is responsible for routing application protocols to the correct application on the destination computer. When the TCP layer receives the application layer protocol data from above, it segments it into manageable 'chunks' and then adds a TCP header to each 'chunk'. The information contained in the TCP header includes the port number of the application the data needs to be sent to. When the TCP layer receives a packet from the IP (Internet Protocol) layer below it, the TCP layer strips the TCP header data from the packet, does some data reconstruction if necessary, and then sends the data to the correct application using the port number taken from the TCP header. Notice that there is no place for an IP address in the TCP header. This is because TCP doesn't know anything about IP addresses. TCP's job is to get application level data from application to application reliably. The task of getting data from computer to computer is the job of IP. IP packets are independent entities and may arrive out of order or not at all. It is TCP's job to make sure packets arrive and are in the correct order.
@@ -41,6 +36,8 @@ CORS (Cross-Origin Resource Sharing) is a mechanism that uses additional HTTP he
 ### Cookie
 Cookie is a small piece of data that a server sends to the user's web browser. The browser may store it and send it back with the next request to the same server. It remembers stateful information for the stateless HTTP protocol. Cookies are mainly used for session management (logins, shopping carts, game scores), personalization(user preferences and themes), and tracking(recording and analyzing user behavior).
 
+
+
 ### UDP
 
 User datagram protocol (UDP)
@@ -56,6 +53,8 @@ Use UDP over TCP when:
 You need the lowest latency
 Late data is worse than loss of data
 You want to implement your own error correction
+
+### SSL/TLS
 
 ### Bandwidth Latency
 
