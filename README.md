@@ -129,12 +129,46 @@ Consistency - Any transaction will bring the database from one valid state to an
 Isolation - Executing transactions concurrently has the same results as if the transactions were executed serially<br/>
 Durability - Once a transaction has been committed, it will remain so<br/>
 
+### SQL / NoSQL
+Reasons for SQL:
 
-### NoSQL
-Key-Value Database
-Document Database
-Column Database
-Graph Database
+Structured data
+Strict schema
+Relational data
+Need for complex joins
+Transactions
+Clear patterns for scaling
+More established: developers, community, code, tools, etc
+Lookups by index are very fast
+Reasons for NoSQL:
+
+Semi-structured data
+Dynamic or flexible schema
+Non-relational data
+No need for complex joins
+Store many TB (or PB) of data
+Very data intensive workload
+Very high throughput for IOPS
+Sample data well-suited for NoSQL:
+
+Rapid ingest of clickstream and log data
+Leaderboard or scoring data
+Temporary data, such as a shopping cart
+Frequently accessed ('hot') tables
+Metadata/lookup tables
+
+
+### Key-Value Database
+A key-value store generally allows for O(1) reads and writes and is often backed by memory or SSD. Data stores can maintain keys in lexicographic order, allowing efficient retrieval of key ranges. Key-value stores can allow for storing of metadata with a value. Key-value stores provide high performance and are often used for simple data models or for rapidly-changing data, such as an in-memory cache layer. Since they offer only a limited set of operations, complexity is shifted to the application layer if additional operations are needed.
+
+### Document Database
+A document store is centered around documents (XML, JSON, binary, etc), where a document stores all information for a given object. Document stores provide APIs or a query language to query based on the internal structure of the document itself. Note, many key-value stores include features for working with a value's metadata, blurring the lines between these two storage types. Based on the underlying implementation, documents are organized in either collections, tags, metadata, or directories. Although documents can be organized or grouped together, documents may have fields that are completely different from each other. Some document stores like MongoDB and CouchDB also provide a SQL-like language to perform complex queries. DynamoDB supports both key-values and documents. Document stores provide high flexibility and are often used for working with occasionally changing data.
+
+### Column Database
+A wide column store's basic unit of data is a column (name/value pair). A column can be grouped in column families (analogous to a SQL table). Super column families further group column families. You can access each column independently with a row key, and columns with the same row key form a row. Each value contains a timestamp for versioning and for conflict resolution. Google introduced Bigtable as the first wide column store, which influenced the open-source HBase often-used in the Hadoop ecosystem, and Cassandra from Facebook. Stores such as BigTable, HBase, and Cassandra maintain keys in lexicographic order, allowing efficient retrieval of selective key ranges. Wide column stores offer high availability and high scalability. They are often used for very large data sets.
+
+### Graph Database
+In a graph database, each node is a record and each arc is a relationship between two nodes. Graph databases are optimized to represent complex relationships with many foreign keys or many-to-many relationships. Graphs databases offer high performance for data models with complex relationships, such as a social network. They are relatively new and are not yet widely-used; it might be more difficult to find development tools and resources. Many graphs can only be accessed with REST APIs. Neo4j
 
 ### Message queues
 For processing you'd like to perform inline with a request but is too slow, the easiest solution is to create a message queue (for example, RabbitMQ). Message queues allow your web applications to quickly publish messages to the queue, and have other consumers processes perform the processing outside the scope and timeline of the client request.
