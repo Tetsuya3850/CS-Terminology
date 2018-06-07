@@ -79,12 +79,26 @@ Federation (or functional partitioning) splits up databases by function. For exa
 ### Sharding
 Sharding distributes data across different databases such that each database only manages a subset of the data. Common ways to shard a table of users is either through the user's last name initial or the user's geographic location. This results in divided and paralell read and write traffic, less replication, and more cache hits. Index size is also reduced. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. Disadvantages include, data distribution can become lopsided in a shard (a set of power users on a shard could result in increased load to that shard), rebalancing adds additional complexity, and joining data from multiple shards is more complex.
 
+### Relational Database
+A relational database is a set of tables. Each table consists of rows. A row is a set of columns, which could be of various types. SQL is the language used to create and manipulate such databases. A key benefit of relational databases include support for ACID(Atomicity, Consistency, Isolation, Durability) transactions.
+
 ### ACID Transaction
 ACID is a set of properties of relational database transactions.<br/>
 Atomicity - Each transaction is all or nothing<br/>
 Consistency - Any transaction will bring the database from one valid state to another<br/>
 Isolation - Executing transactions concurrently has the same results as if the transactions were executed serially<br/>
 Durability - Once a transaction has been committed, it will remain so<br/>
+
+### Normalization/Denomalization
+Database normalization is to organize the database so as to minimize redunduncy. It involves decomposing tables utilizing foreign keys (a field in one table that uniquely identifies a row of another table). Denormalization on the other hand, adds redundant data to one or more tables so as to avoid expensive joins and improve performance. However, extra effort to update the database consistently (multiple fields to update at one time) and more storage are necessary.
+
+### JOIN
+Join is used to combine the results of two tables. To perform a join, each of the tables must have at least one field that will be used to find matching records from the other table.<br/>
+Inner Join: The result set would contain only the data where the criteria match.<br/>
+Outer Join: The result set also contains records that have no matching. The unmatched field will have a NULL value.<br/> 
+Left Outer Join: The result will contain all records from the left table regardless of match.<br/>
+Rgith Outer Join: The result will contain all records from the right table regardless of match.<br/>
+Full Outer Join: The result will contain all records from both the left and right table regardless of match.<br/>
 
 ### Key-Value Database
 A key-value store generally allows for O(1) reads and writes and is often backed by memory or SSD. Key-value stores provide high performance and are often used for simple data models or for rapidly-changing data, such as an in-memory cache layer. Since they offer only a limited set of operations, complexity is shifted to the application layer if additional operations are needed.
@@ -143,22 +157,6 @@ d; // [1, 2, 3, 4]
 ### Garbage Collection
 Garbage Collection is the process of finding data objects in a running program that cannot be accessed in the future, and to reclaim the resources, particulary memory, used by those objects. In Java, C#, Python and many other languages, garbage collection happens automatically. In contrast, in writing C, the programmer is responsible to know when to allocate and deallocate memory.
 
-## Database
-
-### Relational Database
-A relational database is a set of tables. Each table consists of rows. A row is a set of columns, which could be of various types. SQL is the language used to create and manipulate such databases. A key benefit of relational databases include support for ACID(Atomicity, Consistency, Isolation, Durability) transactions.
-
-
-### Normalization/Denomalization
-Database normalization is to organize the database so as to minimize redunduncy. It involves decomposing tables utilizing foreign keys (a field in one table that uniquely identifies a row of another table). Denormalization on the other hand, adds redundant data to one or more tables so as to avoid expensive joins and improve performance. However, extra effort to update the database consistently (multiple fields to update at one time) and more storage are necessary.
-
-### JOIN
-Join is used to combine the results of two tables. To perform a join, each of the tables must have at least one field that will be used to find matching records from the other table.<br/>
-Inner Join: The result set would contain only the data where the criteria match.<br/>
-Outer Join: The result set also contains records that have no matching. The unmatched field will have a NULL value.<br/> 
-Left Outer Join: The result will contain all records from the left table regardless of match.<br/>
-Rgith Outer Join: The result will contain all records from the right table regardless of match.<br/>
-Full Outer Join: The result will contain all records from both the left and right table regardless of match.<br/>
 
 ## Web Programming
 
