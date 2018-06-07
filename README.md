@@ -123,6 +123,15 @@ In a graph database, each node is a record and each arc is a relationship betwee
 
 ## Object Oriented Programming
 
+### Inheritance
+Pub common code in a class and then tell other more specific classes that the common class is their superclass. An inheritance relationship means that the subclass inherits the members of the superclass such as instance variables and methods. Avoids duplicating code in subclasses. If class B extends class A, class B IS-A class A. When you need to modify a behavior common to a group of classes, just update the superclass and the change is reflected in all subclasses.
+
+### Encapsulation
+To hide instance variables (make it private) and restrict access only by public getters and setters. Getters return instance variables, while setters receive an argument value and use it to set the value of an instance variable. By adding check condition to the setter, we could ensure the instance variable stays appropriate.
+
+### Method Overriding
+Subclass redefined one of its inherited methods when it needs to change or extend the behavior of that method.
+
 ### Favor Composition Over Inheritance
 Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
 
