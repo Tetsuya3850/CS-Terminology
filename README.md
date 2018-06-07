@@ -26,12 +26,6 @@ Cookie is a small piece of data that a server sends to the user's web browser. T
 UDP (User datagram protocol), contrast to TCP do not support congestion control (make sure all packets arrive and is in order) and therefore is less reliable but more efficient. Use UDP over TCP when you need the lowest latency and late data is worse than loss of data. Examples are real time use cases such as VoIP, video chat, streaming, and realtime multiplayer games.
 
 
-### SSL/TLS
-
-### Bandwidth Latency
-
-
-
 ## System Design
 
 ### Horizontal/Vertical Scaling
@@ -62,11 +56,13 @@ Caching consists of: precalculating results (e.g. the number of visits from each
 A content delivery network (CDN) is a globally distributed network of proxy servers, serving content from locations closer to the user. Generally, static files such as HTML/CSS/JS, photos, and videos are served. CDNs improve performance in two ways: Users receive content at data centers close to them. Servers do not have to serve requests that the CDN fulfills. In a typical CDN setup, a request will first ask the CDN for a piece of static media, the CDN will serve that content if it has it locally available. If it isn't available, the CDN will query the servers for the file and then cache it locally and serve it to the requesting user.
 
 ### Asynchronism
-Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. One example is a Message queue. First, an application publishes a job to the queue, then notifies the user of job status. Then, a worker picks up the job from the queue, processes it, then signals the job is complete. The user is not blocked and the job is processed in the background. During this time, the client might optionally do a small amount of processing to make it seem like the task has completed (posting a tweet, the tweet could be instantly posted to your timeline, but it could take some time before your tweet is actually delivered to all of your followers). Message queues allow you to create a separate machine pool for performing off-line processing rather than burdening your web application servers. Redis, RabbitMQ, Amazon SQS are common tools to implement this. Queue sizes becoming larger than memory results in cache misses, disk reads, and even slower performance. Therefore, limiting the queue size and informing clients that server is busy in such situation is important.
+Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. One example is a Message queue. First, an application publishes a job to the queue, then notifies the user of job status. Then, a worker picks up the job from the queue, processes it, then signals the job is complete. The user is not blocked and the job is processed in the background. During this time, the client might optionally do a small amount of processing to make it seem like the task has completed (posting a tweet, the tweet could be instantly posted to your timeline, but it could take some time before your tweet is actually delivered to all of your followers). Message queues allow you to create a separate machine pool for performing off-line processing rather than burdening your web application servers. RabbitMQ and Amazon SQS are common tools to implement this. Queue sizes becoming larger than memory could result in cache misses, disk reads, and even slower performance. Therefore, limiting the queue size and informing clients that server is busy in such situation is important.
 
 ### Fail-Over
 With active-passive fail-over, heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service. The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. <br/>
 In active-active, both servers are managing traffic, spreading the load between them. If the servers are public-facing, the DNS would need to know about the public IPs of both servers. If the servers are internal-facing, application logic would need to know about both servers. Disadvantages of failover include, more hardware and additional complexity, potential loss of data if the active system fails before any newly written data can be replicated to the passive.
+
+## Database
 
 ### Replication
 Master-Slave: The master serves reads and writes, replicating writes to one or more slaves, which serve only reads. Slaves can also replicate to additional slaves in a tree-like fashion. If the master goes offline, the system can continue to operate in read-only mode until a slave is promoted to a master or a new master is provisioned.<br/>
@@ -80,7 +76,7 @@ Federation (or functional partitioning) splits up databases by function. For exa
 Sharding distributes data across different databases such that each database only manages a subset of the data. Common ways to shard a table of users is either through the user's last name initial or the user's geographic location. This results in divided and paralell read and write traffic, less replication, and more cache hits. Index size is also reduced. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. Disadvantages include, data distribution can become lopsided in a shard (a set of power users on a shard could result in increased load to that shard), rebalancing adds additional complexity, and joining data from multiple shards is more complex.
 
 ### Relational Database
-A relational database is a set of tables. Each table consists of rows. A row is a set of columns, which could be of various types. SQL is the language used to create and manipulate such databases. A key benefit of relational databases include support for ACID(Atomicity, Consistency, Isolation, Durability) transactions.
+A relational database is a set of tables. Each table consists of rows. A row is a set of columns, which could be of various types. The database schema must be predefined. Any changes in schema necessitates a migration procedure that can take the database offline or significantly reduce application performance. SQL is the language used to create and manipulate such databases. A key benefit of relational databases include support for ACID(Atomicity, Consistency, Isolation, Durability) transactions.
 
 ### ACID Transaction
 ACID is a set of properties of relational database transactions.<br/>
@@ -104,7 +100,7 @@ Full Outer Join: The result will contain all records from both the left and righ
 A key-value store generally allows for O(1) reads and writes and is often backed by memory or SSD. Key-value stores provide high performance and are often used for simple data models or for rapidly-changing data, such as an in-memory cache layer. Since they offer only a limited set of operations, complexity is shifted to the application layer if additional operations are needed.
 
 ### Document Database
-A document store is centered around documents (XML, JSON, binary, etc), where a document stores all information for a given object. Some document stores like MongoDB and CouchDB also provide a SQL-like language to perform complex queries. Although documents can be organized or grouped together, documents may have fields that are completely different from each other. Such high flexibility are often utilized for working with occasionally changing data.
+A document store is centered around documents (XML, JSON, binary, etc), where a document stores all information for a given object (data is represented in the same way that applications do). This minimizes expensive joins and makes it easier for developers to reason about the data. Some document stores like MongoDB and CouchDB also provide a SQL-like language to perform complex queries. Although documents can be organized or grouped together, documents may have fields that are completely different from each other. Such high flexibility are often utilized for working with occasionally changing requirements and data.
 
 ### Column Database
 A wide column store's basic unit of data is a column (name/value pair). A column can be grouped in column families (analogous to a SQL table). Super column families further group column families. You can access each column independently with a row key, and columns with the same row key form a row. Each value contains a timestamp for versioning and for conflict resolution. Google introduced Bigtable as the first wide column store, which influenced the open-source HBase often-used in the Hadoop ecosystem, and Cassandra from Facebook. 
@@ -160,17 +156,18 @@ Garbage Collection is the process of finding data objects in a running program t
 
 ## Web Programming
 
-### Cross Browser Testing
-・Use caniuse.com to check for feature support.
-・Autoprefixer for automatic vendor prefix insertion.
-・Feature detection using Modernizr.
-・Use CSS Feature queries @support
+### DOM
+The Document Object Model is a platform- and language-neutral interface that will allow programs and scripts to dynamically access and update the content, structure and style of documents. The DOM represents the document as nodes and objects.
 
-## CSS
+### Cross Browser Testing
+Use caniuse.com to check for feature support.<br/>
+Autoprefixer for automatic vendor prefix insertion.<br/>
+Feature detection using Modernizr.<br/>
+Use CSS Feature queries @support<br/>
 
 ### Resetting/Normalizing
-Resetting: Strip all default browser styling on elements.
-Normalizing: Preserves useful default styles rather than "unstyling" everything.
+Resetting: Strip all default browser styling on elements.<br/>
+Normalizing: Preserves useful default styles rather than "unstyling" everything.<br/>
 
 ### Position relative, absolute, fixed, static
 relative:The element's position is adjusted relative to itself, without changing layout (and thus leaving a gap for the element where it would have been had it not been positioned).<br/>
@@ -178,10 +175,6 @@ absolute - The element is removed from the flow of the page and positioned at a 
 fixed - The element is removed from the flow of the page and positioned at a specified position relative to the viewport and doesn't move when scrolled.<br/>
 static - The default position; the element will flow into the page as it normally would. The top, right, bottom, left and z-index properties do not apply.<br/>
 
-
-## Performance
-
-### Minification
 
 
 
@@ -238,13 +231,3 @@ Code reuse should be achieved by assembling smaller units of functionality inste
 
 ### MVC
 The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
-
-## Functional Programming
-
-### Pure Function
-A function that given the same input, will always return the same output. Produces no side effects (it can’t alter any external state). Since they are independent of outside state, bugs that have to do with shared mutable state can be avoided. 
-
-### Side Effect
-Modifying external variable or object property (e.g., a global variable, or a variable in the parent function)<br/>
-Logging to the console<br/>
-Writing to the screen, a file or to the network<br/>
