@@ -138,6 +138,25 @@ Code reuse should be achieved by assembling smaller units of functionality inste
 ### MVC
 The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
 
+## Operating System
+
+### OS
+An Operating System (OS) is an interface between a user and computer hardware. It is responsible for managing all the processes that are running on a computer and allocating each process a certain amount of time to use the CPU and memory. To keep track of the state of all the processes, the operating system maintains a process table. The process table is an array of process control blocks (PCBs). PCB is used to track the process’s status (process identification number, process state, program counter, stack pointer, status of opened files, scheduling algorithms, etc). Only one process can be in the running state at any given time. The executed process will continue until it is interrupted by some external factor or it goes for an I/O task (context switch). The process state is saved to PCB and another process loads. This multi-programming maximizes the use of CPU since another process can use CPU while one is waiting for I/O.
+
+### Process Scheduling Algorithms
+First Come First Serve (FCFS): Schedules according to arrival times of processes.<br/>
+Shortest Job First(SJF): Process which have the shortest burst time are scheduled first.<br/>
+Shortest Remaining Time First(SRTF): Jobs are schedule according to shortest remaining time.<br/>
+Round Robin Scheduling: Each process is assigned a fixed time in cyclic way.<br/>
+Priority Based scheduling: Processes are scheduled according to their prioritie.s<br/>
+These algorithms are either non-preemptive or preemptive. Preemptive scheduling is based on priority, where a scheduler may preempt a low priority running process anytime when a high priority process enters into a ready state.
+
+### Process
+A process is an instance of program in execution. A process can be divided into four sections ─ stack, heap, text and data. The process stack contains the temporary data such as method/function parameters, return address and local variables. Heap is dynamically allocated memory to a process during its run time. Text includes the current activity represented by the value of program counter and the contents of the processor's registers. Data contains the global and static variables. Processes can be in one of three states: running, ready, or waiting. The running state means that the process has been given permission by the operating system to use the processor. The remaining processes are either in a waiting state (i.e., waiting for some external event to occur such as user input or a disk access) or a ready state (i.e., waiting for permission to use the processor). Each process is executed in a separate address space and one process cannot access the variables and data structs of another process. If a process wishes to access another process resources, inter-process communications have to be used. These include pipes, files, sockets, and other forms.
+
+### Thread
+A thread is a single sequence stream within in a process. Threads are popular way to improve application through parallelism. For example, in a browser, multiple tabs can be different threads. MS word uses multiple threads, one thread to format the text, other thread to process inputs, etc. A thread has its own program counter, a register set, and a stack space. Threads are not independent of one other like processes as a result threads shares with other threads their code section, data section and OS resources like open files and signals. 
+
 ## Programming Language
 
 ### Scope
