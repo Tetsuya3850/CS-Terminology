@@ -30,106 +30,38 @@ UDP (User datagram protocol), contrast to TCP do not support congestion control 
 
 ### Bandwidth Latency
 
-## Security
 
-### DoS Attack
-DoS (Denial of Service) is a network attack that prevents legitimate use of server resources by flooding the server with requests. Computers have limited resources, for example computation power or memory. When these are exhausted, the program can freeze or crash, making it unavailable. A DoS attack consists of various techniques to exhaust these resources and make a server or a network unavailable to legitimate users, or at least make the server perform sluggishly.
-
-### XSS
-Cross-site scripting (XSS) is a security exploit which allows an attacker to inject into a website malicious client-side code. This code is executed by the victims and lets the attackers bypass access controls and impersonate users. These attacks succeed if the Web app does not employ enough validation or encoding. The user's browser cannot detect the malicious script is untrustworthy, and so gives it access to any cookies, session tokens, or other sensitive site-specific information, or lets the malicious script rewrite the HTML content. Cross-site scripting attacks usually occur when 1) data enters a Web app through an untrusted source (most often a Web request) or 2) dynamic content is sent to a Web user without being validated for malicious content. The malicious content often includes JavaScript, but sometimes HTML, Flash, or any other code the browser can execute. The variety of attacks based on XSS is almost limitless, but they commonly include transmitting private data like cookies or other session information to the attacker, redirecting the victim to a webpage controlled by the attacker, or performing other malicious operations on the user's machine under the guise of the vulnerable site. XSS attacks can be put into three categories: stored (also called persistent), reflected (also called non-persistent), or DOM-based.
-
-### CSRF
-CSRF (Cross-Site Request Forgery) is an attack that impersonates a trusted user and sends a website unwanted commands. This can be done, for example, by including malicious parameters in a URL behind a link that purports to go somewhere else.
-
-### SQL Injection
-SQL injection is a code injection technique that might destroy your database. SQL injection is the placement of malicious code in SQL statements, via web page input. SQL injection usually occurs when you ask a user for input, like their username/userid, and instead of a name/id, the user gives you an SQL statement that you will unknowingly run on your database.To protect a web site from SQL injection, you can use SQL parameters. SQL parameters are values that are added to an SQL query at execution time, in a controlled manner.
-
-## Object Oriented Programming
-
-### Favor Composition Over Inheritance
-Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
-
-### MVC
-The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
-
-## Functional Programming
-
-### Pure Function
-A function that given the same input, will always return the same output. Produces no side effects (it can’t alter any external state). Since they are independent of outside state, bugs that have to do with shared mutable state can be avoided. 
-
-### Side Effect
-Modifying external variable or object property (e.g., a global variable, or a variable in the parent function)<br/>
-Logging to the console<br/>
-Writing to the screen, a file or to the network<br/>
 
 ## System Design
 
-### Load Balancing
-Load balancing is the process of spreading requests across multiple resources according to some metric (random, round-robin, session/cookies, random with weighting for machine capacity, etc) and their current status (available for requests, not responding, elevated error rate, etc) to achieve scalability and redundancy. A moderately large system may balance load at three layers, user to web servers, web servers to an internal platform layer, internal platform layer to database. Load balancers can be implmented with hardware or software, but the hardware tends to be costly. One famous software solution is HAProxy, where for each service you want to load-balance, a locally bound port should be configured. Additional benefits of load balancers include, SSL termination (Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), session persistence (issue cookies and route a specific client's requests to same instance if the web apps do not keep track of sessions). To protect against failures, it's common to set up multiple load balancers.
- 
-### Caching
-Caching consists of: precalculating results (e.g. the number of visits from each referring domain for the previous day), pre-generating expensive indexes (e.g. suggested stories based on a user's click history), and storing copies of frequently accessed data in a faster backend (e.g. Memcached instead of PostgreSQL.) Memcached and Redis are fast since they are in-memory, not disk. However, RAM space is generally far less than disk space, so you should only keep a hot subset of your data in cache. To decide which to hold, last recently used is a good strategy (recently requested data is likely to be requested again). By placing cache near to the front-end, it could instantly serve cached results and also mitigate the load to downstream backends. However, when the original data gets updated, relating cache data should be invalidated. The solution is, each time a value changes, write the new value into the cache (this is called a write-through cache) or simply delete the current value from the cache and allow a read-through cache to populate it later. Adding fixed expirations to cached data is also an important strategy. Multiple caches makes the problem yet trickier.
-
-### Cache Update Strategies
-Cache-aside: The application is responsible for reading and writing from storage. The cache does not interact with storage directly. The application does the following: 1. Look for entry in cache, resulting in a cache miss 2. Load entry from the database 3. Add entry to cache 4. Return entry Memcached is generally used in this manner. Subsequent reads of data added to cache are fast. Cache-aside is also referred to as lazy loading. Only requested data is cached, which avoids filling up the cache with data that isn't requested. Disadvantages include, each cache miss results in three trips, which can cause a noticeable delay, data can become stale if it is updated in the database. This issue is mitigated by setting a time-to-live (TTL) which forces an update of the cache entry, or by using write-through. When a node fails, it is replaced by a new, empty node, increasing latency.<br/>
-Write-through: The application uses the cache as the main data store, reading and writing data to it, while the cache is responsible for reading and writing to the database: 1. Application adds/updates entry in cache 2. Cache synchronously writes entry to data store 3.Return Write-through is a slow overall operation due to the write operation, but subsequent reads of just written data are fast. Users are generally more tolerant of latency when updating data than reading data. Data in the cache is not stale. Disadvantages include, When a new node is created due to failure or scaling, the new node will not cache entries until the entry is updated in the database. Cache-aside in conjunction with write through can mitigate this issue.
-Most data written might never read, which can be minimized with a TTL.<br/>
-Write-behind: In write-behind, the application does the following:1. Add/update entry in cache 2.Asynchronously write entry to the data store, improving write performance. Disadvantages include, there could be data loss if the cache goes down prior to its contents hitting the data store. it is more complex to implement write-behind than it is to implement cache-aside or write-through.<br/>
-Refresh-ahead: You can configure the cache to automatically refresh any recently accessed cache entry prior to its expiration. Refresh-ahead can result in reduced latency vs read-through if the cache can accurately predict which items are likely to be needed in the future. Disadvantage(s): refresh-ahead Not accurately predicting which items are likely to be needed in the future can result in reduced performance than without refresh-ahead.<br/>
-
-### Asynchronism
-Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. They can also help by doing time-consuming work in advance, such as periodic aggregation of data.
-
-Message queues
-Message queues receive, hold, and deliver messages. If an operation is too slow to perform inline, you can use a message queue with the following workflow:
-
-An application publishes a job to the queue, then notifies the user of job status
-A worker picks up the job from the queue, processes it, then signals the job is complete
-The user is not blocked and the job is processed in the background. During this time, the client might optionally do a small amount of processing to make it seem like the task has completed. For example, if posting a tweet, the tweet could be instantly posted to your timeline, but it could take some time before your tweet is actually delivered to all of your followers.
-
-Redis is useful as a simple message broker but messages can be lost.
-
-RabbitMQ is popular but requires you to adapt to the 'AMQP' protocol and manage your own nodes.
-
-Amazon SQS, is hosted but can have high latency and has the possibility of messages being delivered twice.
-
-Task queues
-Tasks queues receive tasks and their related data, runs them, then delivers their results. They can support scheduling and can be used to run computationally-intensive jobs in the background.
-
-Celery has support for scheduling and primarily has python support.
-
-Back pressure
-If queues start to grow significantly, the queue size can become larger than memory, resulting in cache misses, disk reads, and even slower performance. Back pressure can help by limiting the queue size, thereby maintaining a high throughput rate and good response times for jobs already in the queue. Once the queue fills up, clients get a server busy or HTTP 503 status code to try again later. Clients can retry the request at a later time, perhaps with exponential backoff.
-
-Disadvantage(s): asynchronism
-Use cases such as inexpensive calculations and realtime workflows might be better suited for synchronous operations, as introducing queues can add delays and complexity.
-
-
-
-### Horizontal / Vertical Scaling
-Scaling vertically means adding more resources to an individual server. This might mean adding more hard drives so a single server can contain the entire data set, or moving the computation to a bigger server with a faster CPU or more memory. In each case, vertical scaling is accomplished by making the individual resource capable of handling more on its own. However, the best machine available in market is the limit.
-
-Scaling horizontally, on the other hand, is to add more nodes. This might be a second server to store parts of the data set, or splitting the operation or load across some additional nodes. One of the more common techniques is to break up your services into partitions, or shards. The partitions can be distributed such that each logical set of functionality is separate; this could be done by geographic boundaries, or by another criteria like non-paying versus paying users.
-
-
-### Stateless/Stateful System
-A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
-
-### Latency / Throughput
-Latency is the time to perform some action or to produce some result. Throughput is the number of such actions or results per unit of time. Generally, you should aim for maximal throughput with acceptable latency.
-
+### Horizontal/Vertical Scaling
+Scaling vertically means adding more resources to an individual server. This might mean adding more hard drives so a single server can contain the entire data set, or moving the computation to a bigger server with a faster CPU or more memory. In each case, vertical scaling is accomplished by making the individual resource capable of handling more on its own. However, it can only scale to the best one machine on Earth. Scaling horizontally, on the other hand, is to add more nodes. This might be a second server to store parts of the data set, or splitting the operation or load across some additional nodes. 
 
 ### CAP Theorem
 In a distributed computer system, you can only support two of the following guarantees:
 Consistency - Every read receives the most recent write or an error<br/>
 Availability - Every request receives a response, without guarantee that it contains the most recent version<br/>
 Partition Tolerance - The system continues to operate despite arbitrary partitioning due to network failures<br/>
-Networks aren't reliable, so you'll need to support partition tolerance. Therefore, the tradeoff is between consistency and availability. If you choose consistency, waiting for a response from the partitioned node might result in a timeout error. CP is a good choice if your business needs require atomic reads and writes. If you choose availability, responses return the most recent version of the data available on the a node, which might not be the latest. Writes might take some time to propagate when the partition is resolved. AP is a good choice if the business needs allow for eventual consistency or when the system needs to continue working despite external errors.
+Networks aren't reliable, so you'll need to support partition tolerance. Therefore, the tradeoff is between consistency and availability. If you choose consistency, waiting for a response from the partitioned node might result in a timeout error. This is a good choice if your business needs require atomic reads and writes. If you choose availability, responses return the most recent version of the data available on the node, which might not be the latest. Writes might take some time to propagate when the partition is resolved. This is a good choice if the business needs allow for eventual consistency or when the system needs to continue working despite external errors.
 
-### Consistency
-Weak consistency (After a write, reads may or may not see it. A best effort approach is taken.) is seen in systems such as memcached. Weak consistency works well in real time use cases such as VoIP, video chat, and realtime multiplayer games. For example, if you are on a phone call and lose reception for a few seconds, when you regain connection you do not hear what was spoken during connection loss.<br/>
-Eventual consistency (After a write, reads will eventually see it typically within milliseconds, data is replicated asynchronously.) This approach is seen in systems such as DNS and email. Eventual consistency works well in highly available systems.<br/>
-Strong consistency (After a write, reads will see it. Data is replicated synchronously.) This approach is seen in file systems and RDBMSes. Strong consistency works well in systems that need transactions.<br/>
+### Consistency Patterns
+Weak consistency: after write, reads may or may not be seen. ex VoIP, video chat, and multiplayer games (realtime). <br/>
+Eventual consistency: after a write, reads will eventually see it (typically within milliseconds) ex DNS and email. <br/>
+Strong consistency: after a write, data is replicated synchronously. ex file systems and RDBMSes.<br/>
+
+### Load Balancing
+Load balancing is the process of spreading requests across multiple resources according to some metric (random, round-robin, session/cookies, random with weighting for machine capacity, etc) and their current status (available for requests, not responding, elevated error rate, etc) to achieve scalability and redundancy. A moderately large system may balance load at three layers, user to web servers, web servers to an internal platform layer, internal platform layer to database. Load balancers can be implmented with hardware or software, but the hardware tends to be costly. One software solution is HAProxy. Load balancing is implemented by configuring a locally bound port for each service. Additional benefits of load balancers include, SSL termination (Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), session persistence (issue cookies and route a specific client's requests to same instance if the web apps do not keep track of sessions). To protect against failures, it's common to set up multiple load balancers.
+ 
+### Caching
+Caching consists of: precalculating results (e.g. the number of visits from each referring domain for the previous day), pre-generating expensive indexes (e.g. suggested stories based on a user's click history), and storing copies of frequently accessed data in a faster backend (e.g. Memcached instead of PostgreSQL.) Memcached and Redis are fast since they are in-memory, not disk. However, RAM space is generally far less than disk space, so you should only keep a hot subset of your data in cache. To decide which to hold, last recently used is a good strategy (recently requested data is likely to be requested again). By placing cache near to the front-end, it could instantly serve cached results and also mitigate the load to downstream backends. However, when the original data gets updated, relating cache data should be invalidated. 
+
+### Asynchronism
+Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. One example, Message queues receive, hold, and deliver messages. First, an application publishes a job to the queue, then notifies the user of job status. Then, a worker picks up the job from the queue, processes it, then signals the job is complete.
+The user is not blocked and the job is processed in the background. Redis, RabbitMQ, Amazon SQS are common tools to implement this. Anotehr example is Task queues, which receive tasks and their related data, runs them, then delivers their results. They can support scheduling and can be used to run computationally-intensive jobs in the background. Celery is one implementation of this. If queues start to grow significantly, the queue size can become larger than memory, resulting in cache misses, disk reads, and even slower performance. Therefore, limiting the queue size and informing clients that server is busy in such situation is important.
+
+
+
+
 
 ### Fail-Over
 With active-passive fail-over, heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service. The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. Only the active server handles traffic. In active-active, both servers are managing traffic, spreading the load between them. If the servers are public-facing, the DNS would need to know about the public IPs of both servers. If the servers are internal-facing, application logic would need to know about both servers. Disadvantages of failover are, more hardware and additional complexity, potential loss of data if the active system fails before any newly written data can be replicated to the passive.
@@ -154,6 +86,12 @@ A reverse proxy is a web server that centralizes internal services and provides 
 
 ### Application Layer
 Separating out the web layer from the application layer (also known as platform layer) allows you to scale and configure both layers independently. Adding a new API results in adding application servers without necessarily adding additional web servers. The single responsibility principle advocates for small and autonomous services that work together. Small teams with small services can plan more aggressively for rapid growth. Related to this discussion are microservices, which can be described as a suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal. Systems such as Consul, Etcd, and Zookeeper can help services find each other by keeping track of registered names, addresses, and ports
+
+### Stateless/Stateful System
+A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
+
+### Latency / Throughput
+Latency is the time to perform some action or to produce some result. Throughput is the number of such actions or results per unit of time. Generally, you should aim for maximal throughput with acceptable latency.
 
 
 
@@ -358,3 +296,35 @@ A promise is an synchronously returned object from an asynchronous function that
 
 ### Asynchronous programming
 Asynchronous programming means that the engine runs in an event loop. When a blocking operation is needed, the request is started, and the code keeps running without blocking for the result. When the response is ready, an interrupt is fired, which causes an event handler to be run, where the control flow continues. In this way, a single program thread can handle many concurrent operations.
+
+## Security
+
+### DoS Attack
+DoS (Denial of Service) is a network attack that prevents legitimate use of server resources by flooding the server with requests. Computers have limited resources, for example computation power or memory. When these are exhausted, the program can freeze or crash, making it unavailable. 
+
+### XSS
+Cross-site scripting (XSS) is a security exploit which allows an attacker to inject into a website malicious client-side code. This code is executed by the victims and lets the attackers bypass access controls and impersonate users. These attacks succeed if the Web app does not employ enough validation or encoding. The user's browser cannot detect the malicious script is untrustworthy, and so gives it access to any cookies, session tokens, or other sensitive site-specific information, or lets the malicious script rewrite the HTML content. Cross-site scripting attacks usually occur when 1) data enters a Web app through an untrusted source (most often a Web request) or 2) dynamic content is sent to a Web user without being validated for malicious content. The malicious content often includes JavaScript, but sometimes HTML, Flash, or any other code the browser can execute. The variety of attacks based on XSS is almost limitless, but they commonly include transmitting private data like cookies or other session information to the attacker, redirecting the victim to a webpage controlled by the attacker, or performing other malicious operations on the user's machine under the guise of the vulnerable site. XSS attacks can be put into three categories: stored (also called persistent), reflected (also called non-persistent), or DOM-based.
+
+### CSRF
+CSRF (Cross-Site Request Forgery) is an attack that impersonates a trusted user and sends a website unwanted commands. This can be done, for example, by including malicious parameters in a URL behind a link that purports to go somewhere else.
+
+### SQL Injection
+SQL injection is a code injection technique that might destroy your database. SQL injection is the placement of malicious code in SQL statements, via web page input. SQL injection usually occurs when you ask a user for input, like their username/userid, and instead of a name/id, the user gives you an SQL statement that you will unknowingly run on your database.To protect a web site from SQL injection, you can use SQL parameters. SQL parameters are values that are added to an SQL query at execution time, in a controlled manner.
+
+## Object Oriented Programming
+
+### Favor Composition Over Inheritance
+Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
+
+### MVC
+The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
+
+## Functional Programming
+
+### Pure Function
+A function that given the same input, will always return the same output. Produces no side effects (it can’t alter any external state). Since they are independent of outside state, bugs that have to do with shared mutable state can be avoided. 
+
+### Side Effect
+Modifying external variable or object property (e.g., a global variable, or a variable in the parent function)<br/>
+Logging to the console<br/>
+Writing to the screen, a file or to the network<br/>
