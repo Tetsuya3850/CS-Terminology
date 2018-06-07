@@ -25,6 +25,10 @@ Cookie is a small piece of data that a server sends to the user's web browser. T
 ### UDP
 UDP (User datagram protocol), contrast to TCP do not support congestion control (make sure all packets arrive and is in order) and therefore is less reliable but more efficient. Use UDP over TCP when you need the lowest latency and late data is worse than loss of data. Examples are real time use cases such as VoIP, video chat, streaming, and realtime multiplayer games.
 
+### Bandwidth/Throuhput/Latency
+Bandwidth: Maximum amount of data that can be transferred in a unit of time. Typically expressed in bits per second.<br/>
+Throughput: Actual amount of data that is transferred in a unit of time.<br/>
+Latency: How long it takes data to go from one end to the other. The delay between the sender sending and receiver receiving<br/>
 
 ## System Design
 
@@ -43,6 +47,13 @@ Weak consistency: after write, reads may or may not be seen. ex VoIP, video chat
 Eventual consistency: after a write, reads will eventually see it (typically within milliseconds) ex DNS and email. <br/>
 Strong consistency: after a write, data is replicated synchronously. ex file systems and RDBMSes.<br/>
 
+### Availability/Reliability
+Availability is a function of the percentage of time the system is operational.<br/>
+Reliability is a function of the probability that the system is operational for a certain unit of time.<br/>
+
+### Read-heavy/Write-heavy
+If read-heavy, consider caching. If write-heavy, consider queuing up the writes.
+
 ### Load Balancing
 Load balancing is the process of spreading requests across multiple resources according to some metric (random, round-robin, session/cookies, random with weighting for machine capacity, etc) and their current status (available for requests, not responding, elevated error rate, etc) to achieve scalability and redundancy. A moderately large system may balance load at three layers, user to web servers, web servers to an internal platform layer, internal platform layer to database. Load balancers can be implmented with hardware or software, but the hardware tends to be costly. One software solution is HAProxy. Load balancing is implemented by configuring a locally bound port for each service. Additional benefits of load balancers include, SSL termination (Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), session persistence (issue cookies and route a specific client's requests to same instance if the web apps do not keep track of sessions). To protect against failures, it's common to set up multiple load balancers.
 
@@ -50,7 +61,7 @@ Load balancing is the process of spreading requests across multiple resources ac
 A reverse proxy is a web server that centralizes internal services and provides unified interfaces to the public. Requests from clients are forwarded to a server that can fulfill it by the proxy. Additional benefits include, increased security (hide information about backend servers, blacklist IPs, limit number of connections per client), increased scalability and flexibility (clients only see the reverse proxy's IP, allowing you to scale servers or change their configuration), SSL termination (decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations). Load balancing solutions such as HAProxy can support reverse proxying as well.
  
 ### Caching
-Caching consists of: precalculating results (e.g. the number of visits from each referring domain for the previous day), pre-generating expensive indexes (e.g. suggested stories based on a user's click history), and storing copies of frequently accessed data in a faster backend (e.g. Memcached instead of PostgreSQL.) Memcached and Redis are fast since they are in-memory, not disk. However, RAM space is generally far less than disk space, so you should only keep a hot subset of your data in cache. To decide which to hold, last recently used is a good strategy (recently requested data is likely to be requested again). By placing cache near to the front-end, it could instantly serve cached results and also mitigate the load to downstream backends. However, when the original data gets updated, relating cache data should be invalidated.
+Caching stores copies of frequently accessed data as a key-value pair (e.g. Memcached instead of PostgreSQL.) Memcached and Redis are fast since they are in-memory, not disk. However, RAM space is generally far less than disk space, so only a hot subset of the data should be kept in cache. To decide which to hold, last recently used is a good strategy (recently requested data is likely to be requested again). By placing cache near to the front-end, it could instantly serve cached results and also mitigate the load to downstream backends. However, when the original data gets updated, relating cache data should be invalidated.
 
 ### CDN
 A content delivery network (CDN) is a globally distributed network of proxy servers, serving content from locations closer to the user. Generally, static files such as HTML/CSS/JS, photos, and videos are served. CDNs improve performance in two ways: Users receive content at data centers close to them. Servers do not have to serve requests that the CDN fulfills. In a typical CDN setup, a request will first ask the CDN for a piece of static media, the CDN will serve that content if it has it locally available. If it isn't available, the CDN will query the servers for the file and then cache it locally and serve it to the requesting user.
@@ -61,6 +72,9 @@ Asynchronous workflows help reduce request times for expensive operations that w
 ### Fail-Over
 With active-passive fail-over, heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service. The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. <br/>
 In active-active, both servers are managing traffic, spreading the load between them. If the servers are public-facing, the DNS would need to know about the public IPs of both servers. If the servers are internal-facing, application logic would need to know about both servers. Disadvantages of failover include, more hardware and additional complexity, potential loss of data if the active system fails before any newly written data can be replicated to the passive.
+
+### MapReduce
+Map takes in some data and emits a <key, value> pair. Reduce takes a key and a set of associated values and reduces them in someway, emitting a new key and value. MapReduce allows a lot of processing to be done in parellel which makes processing huge amounts of data more scalable.
 
 ## Database
 
@@ -73,7 +87,7 @@ Disadvantages of replication include, potential loss of data if the master fails
 Federation (or functional partitioning) splits up databases by function. For example, instead of a single, monolithic database, you could have three databases: forums, users, and products, resulting in divided and parallel read and write traffic to each database and therefore improving performance. Disadvantages include the necessity to update application logic to determine which database to read and write and joining data from two databases becoming more complex with a server link.
 
 ### Sharding
-Sharding distributes data across different databases such that each database only manages a subset of the data. Common ways to shard a table of users is either through the user's last name initial or the user's geographic location. This results in divided and paralell read and write traffic, less replication, and more cache hits. Index size is also reduced. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. Disadvantages include, data distribution can become lopsided in a shard (a set of power users on a shard could result in increased load to that shard), rebalancing adds additional complexity, and joining data from multiple shards is more complex.
+Sharding distributes data across different databases such that each database only manages a subset of the data. Common ways to shard a table include, through alphabetical, geolocation, hash key, random (with lookup table). This results in divided and paralell read and write traffic, less replication, and more cache hits. Index size is also reduced. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. Disadvantages include, data distribution can become lopsided in a shard (a set of power users on a shard could result in increased load to that shard), rebalancing adds additional complexity, and joining data from multiple shards is more complex.
 
 ### Relational Database
 A relational database is a set of tables. Each table consists of rows. A row is a set of columns, which could be of various types. The database schema must be predefined. Any changes in schema necessitates a migration procedure that can take the database offline or significantly reduce application performance. SQL is the language used to create and manipulate such databases. A key benefit of relational databases include support for ACID(Atomicity, Consistency, Isolation, Durability) transactions.
@@ -88,7 +102,7 @@ Durability - Once a transaction has been committed, it will remain so<br/>
 ### Normalization/Denomalization
 Database normalization is to organize the database so as to minimize redunduncy. It involves decomposing tables utilizing foreign keys (a field in one table that uniquely identifies a row of another table). Denormalization on the other hand, adds redundant data to one or more tables so as to avoid expensive joins and improve performance. However, extra effort to update the database consistently (multiple fields to update at one time) and more storage are necessary.
 
-### JOIN
+### Join
 Join is used to combine the results of two tables. To perform a join, each of the tables must have at least one field that will be used to find matching records from the other table.<br/>
 Inner Join: The result set would contain only the data where the criteria match.<br/>
 Outer Join: The result set also contains records that have no matching. The unmatched field will have a NULL value.<br/> 
@@ -107,6 +121,14 @@ A wide column store's basic unit of data is a column (name/value pair). A column
 
 ### Graph Database
 In a graph database, each node is a record and each arc is a relationship between two nodes. Graph databases are optimized to represent complex relationships with many foreign keys or many-to-many relationships. Graphs databases offer high performance for data models with complex relationships, such as a social network. Neo4j is a famous example.
+
+## Object Oriented Programming
+
+### Favor Composition Over Inheritance
+Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
+
+### MVC
+The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
 
 ## Programming Language
 
@@ -210,24 +232,4 @@ A promise is an synchronously returned object from an asynchronous function that
 ### Asynchronous programming
 Asynchronous programming means that the engine runs in an event loop. When a blocking operation is needed, the request is started, and the code keeps running without blocking for the result. When the response is ready, an interrupt is fired, which causes an event handler to be run, where the control flow continues. In this way, a single program thread can handle many concurrent operations.
 
-## Security
 
-### DoS Attack
-DoS (Denial of Service) is a network attack that prevents legitimate use of server resources by flooding the server with requests. Computers have limited resources, for example computation power or memory. When these are exhausted, the program can freeze or crash, making it unavailable. 
-
-### XSS
-Cross-site scripting (XSS) is a security exploit which allows an attacker to inject into a website malicious client-side code. This code is executed by the victims and lets the attackers bypass access controls and impersonate users. These attacks succeed if the Web app does not employ enough validation or encoding. The user's browser cannot detect the malicious script is untrustworthy, and so gives it access to any cookies, session tokens, or other sensitive site-specific information, or lets the malicious script rewrite the HTML content. Cross-site scripting attacks usually occur when 1) data enters a Web app through an untrusted source (most often a Web request) or 2) dynamic content is sent to a Web user without being validated for malicious content. The malicious content often includes JavaScript, but sometimes HTML, Flash, or any other code the browser can execute. The variety of attacks based on XSS is almost limitless, but they commonly include transmitting private data like cookies or other session information to the attacker, redirecting the victim to a webpage controlled by the attacker, or performing other malicious operations on the user's machine under the guise of the vulnerable site. XSS attacks can be put into three categories: stored (also called persistent), reflected (also called non-persistent), or DOM-based.
-
-### CSRF
-CSRF (Cross-Site Request Forgery) is an attack that impersonates a trusted user and sends a website unwanted commands. This can be done, for example, by including malicious parameters in a URL behind a link that purports to go somewhere else.
-
-### SQL Injection
-SQL injection is a code injection technique that might destroy your database. SQL injection is the placement of malicious code in SQL statements, via web page input. SQL injection usually occurs when you ask a user for input, like their username/userid, and instead of a name/id, the user gives you an SQL statement that you will unknowingly run on your database.To protect a web site from SQL injection, you can use SQL parameters. SQL parameters are values that are added to an SQL query at execution time, in a controlled manner.
-
-## Object Oriented Programming
-
-### Favor Composition Over Inheritance
-Code reuse should be achieved by assembling smaller units of functionality instead of inheriting from classes. In other words, use can-do, has-a, or uses-a relationships instead of is-a relationships.
-
-### MVC
-The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
