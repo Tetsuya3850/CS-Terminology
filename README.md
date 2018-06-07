@@ -157,6 +157,25 @@ A process is an instance of program in execution. A process can be divided into 
 ### Thread
 A thread is a single sequence stream within in a process. Threads are popular way to improve application through parallelism. For example, in a browser, multiple tabs can be different threads. MS word uses multiple threads, one thread to format the text, other thread to process inputs, etc. A thread has its own program counter, a register set, and a stack space. Threads are not independent of one other like processes as a result threads shares with other threads their code section, data section and OS resources like open files and signals. 
 
+## Concurrency
+
+### Deadlock
+Deadlock is a situation when two or more processes wait for each other to finish and none of them ever finish. This happens in OS when for example, Process 1 is holding Resource 1 and waiting for resource 2 which is acquired by process 2, and process 2 is waiting for resource 1. Deadlock is handled by either prevention, detection and recovery, or ignore and reboot. Some strategies to avoid such situations include, requiring process to declare upfront what locks it will need and see each locks as a graph node and check whether a cycle exists or have a global ordering on locks and acquire them in that order.
+
+### Livelock
+Livelock is a situation where processes constantly change their state in regard to one another, withoub progress. A real-world example of livelock occurs when two people meet in a narrow corridor, and each tries to be polite by moving aside to let the other pass, but they end up swaying from side to side without making any progress because they both repeatedly move the same way at the same time. Livelock is a risk with some algorithms that detect and recover from deadlock. If more than one process takes action, the deadlock detection algorithm can be repeatedly triggered. This can be avoided by ensuring that only one process (chosen randomly or by priority) takes action. Consider two processes each waiting for a resource the other has but waiting in a non-blocking manner. When each learns they cannot continue they release their held resource and sleep for 30 seconds, then they retrieve their original resource followed by trying to the resource the other process held, then left, then reaquired. Since both processes are trying to cope (just badly), this is a livelock.
+
+### Synchronization
+Thread synchronization is defined as a mechanism which ensures that two or more concurrent processes or threads do not simultaneously execute some particular program segment known as critical section. Processes’ access to critical section is controlled by using synchronization techniques.
+
+### Mutex
+Mutex is locking mechanism used to synchronize access to a resource. Only one task (can be a thread or process based on OS abstraction) can acquire the mutex(binary flag). It means there is ownership associated with mutex, and only the owner can release the lock. 
+
+### Semaphore
+Semaphore is signaling mechanism. The two most common kinds of semaphores are counting semaphores and binary semaphores. Counting semaphore can take non-negative integer values and Binary semaphore can take the value 0 & 1. only.  Semaphores is used to limit the number of access to one resource.  By convention, when a semaphore is zero it is "locked" or "in use". Otherwise, positive values indicate that the semaphore is available.
+
+
+
 ## Programming Language
 
 ### Scope
