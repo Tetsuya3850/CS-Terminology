@@ -38,7 +38,7 @@ UDP (User datagram protocol), contrast to TCP do not support congestion control 
 Scaling vertically means adding more resources to an individual server. This might mean adding more hard drives so a single server can contain the entire data set, or moving the computation to a bigger server with a faster CPU or more memory. In each case, vertical scaling is accomplished by making the individual resource capable of handling more on its own. However, it can only scale to the best one machine on Earth. Scaling horizontally, on the other hand, is to add more nodes. This might be a second server to store parts of the data set, or splitting the operation or load across some additional nodes. 
 
 ### CAP Theorem
-In a distributed computer system, you can only support two of the following guarantees:
+In a distributed computer system, you can only support two of the following guarantees:<br/>
 Consistency - Every read receives the most recent write or an error<br/>
 Availability - Every request receives a response, without guarantee that it contains the most recent version<br/>
 Partition Tolerance - The system continues to operate despite arbitrary partitioning due to network failures<br/>
@@ -58,6 +58,12 @@ A reverse proxy is a web server that centralizes internal services and provides 
 ### Caching
 Caching consists of: precalculating results (e.g. the number of visits from each referring domain for the previous day), pre-generating expensive indexes (e.g. suggested stories based on a user's click history), and storing copies of frequently accessed data in a faster backend (e.g. Memcached instead of PostgreSQL.) Memcached and Redis are fast since they are in-memory, not disk. However, RAM space is generally far less than disk space, so you should only keep a hot subset of your data in cache. To decide which to hold, last recently used is a good strategy (recently requested data is likely to be requested again). By placing cache near to the front-end, it could instantly serve cached results and also mitigate the load to downstream backends. However, when the original data gets updated, relating cache data should be invalidated.
 
+### CDN
+A content delivery network (CDN) is a globally distributed network of proxy servers, serving content from locations closer to the user. Generally, static files such as HTML/CSS/JS, photos, and videos are served. CDNs improve performance in two ways: Users receive content at data centers close to them. Servers do not have to serve requests that the CDN fulfills. In a typical CDN setup, a request will first ask the CDN for a piece of static media, the CDN will serve that content if it has it locally available. If it isn't available, the CDN will query the servers for the file and then cache it locally and serve it to the requesting user.
+
+### Asynchronism
+Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. One example is a Message queue. First, an application publishes a job to the queue, then notifies the user of job status. Then, a worker picks up the job from the queue, processes it, then signals the job is complete. The user is not blocked and the job is processed in the background. During this time, the client might optionally do a small amount of processing to make it seem like the task has completed (posting a tweet, the tweet could be instantly posted to your timeline, but it could take some time before your tweet is actually delivered to all of your followers). Message queues allow you to create a separate machine pool for performing off-line processing rather than burdening your web application servers. Redis, RabbitMQ, Amazon SQS are common tools to implement this. Queue sizes becoming larger than memory results in cache misses, disk reads, and even slower performance. Therefore, limiting the queue size and informing clients that server is busy in such situation is important.
+
 ### Fail-Over
 With active-passive fail-over, heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service. The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. <br/>
 In active-active, both servers are managing traffic, spreading the load between them. If the servers are public-facing, the DNS would need to know about the public IPs of both servers. If the servers are internal-facing, application logic would need to know about both servers. Disadvantages of failover include, more hardware and additional complexity, potential loss of data if the active system fails before any newly written data can be replicated to the passive.
@@ -71,110 +77,26 @@ Disadvantages of replication include, potential loss of data if the master fails
 Federation (or functional partitioning) splits up databases by function. For example, instead of a single, monolithic database, you could have three databases: forums, users, and products, resulting in divided and parallel read and write traffic to each database and therefore improving performance. Disadvantages include the necessity to update application logic to determine which database to read and write and joining data from two databases becoming more complex with a server link.
 
 ### Sharding
-Sharding distributes data across different databases such that each database only manages a subset of the data. Common ways to shard a table of users is either through the user's last name initial or the user's geographic location. This results in divided and paralell read and write traffic, less replication, and more cache hits. Index size is also reduced. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. 
-
-
- Disadvantages include, need to update your application logic to work with shards, which could result in complex SQL queries, data distribution can become lopsided in a shard ( a set of power users on a shard could result in increased load to that shard compared to others), rebalancing adds additional complexity (sharding function based on consistent hashing can reduce the amount of transferred data, joining data from multiple shards is more complex.
-
-### Denormalization
-Denormalization improves read performance at the expense of some write performance. Redundant copies of the data are written in multiple tables to avoid expensive joins. Once data becomes distributed with techniques such as federation and sharding, managing joins across data centers further increases complexity. Disadvantages include, data duplication, a denormalized database under heavy write load might perform worse than its normalized counterpart.
-
-
-### Asynchronism
-Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. One example, Message queues receive, hold, and deliver messages. First, an application publishes a job to the queue, then notifies the user of job status. Then, a worker picks up the job from the queue, processes it, then signals the job is complete.
-The user is not blocked and the job is processed in the background. Redis, RabbitMQ, Amazon SQS are common tools to implement this. Anotehr example is Task queues, which receive tasks and their related data, runs them, then delivers their results. They can support scheduling and can be used to run computationally-intensive jobs in the background. Celery is one implementation of this. If queues start to grow significantly, the queue size can become larger than memory, resulting in cache misses, disk reads, and even slower performance. Therefore, limiting the queue size and informing clients that server is busy in such situation is important.
-
-### Application Layer
-Separating out the web layer from the application layer (also known as platform layer) allows you to scale and configure both layers independently. Adding a new API results in adding application servers without necessarily adding additional web servers. The single responsibility principle advocates for small and autonomous services that work together. Small teams with small services can plan more aggressively for rapid growth. Related to this discussion are microservices, which can be described as a suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal. Systems such as Consul, Etcd, and Zookeeper can help services find each other by keeping track of registered names, addresses, and ports
-
-### Stateless/Stateful System
-A stateless system's output depends only on the input. A stateful system's output depends on the input and internal state. Therefore, the same set of input can generate different output. This makes multiple actors accessing the system a trickier problem.
-
-### Latency / Throughput
-Latency is the time to perform some action or to produce some result. Throughput is the number of such actions or results per unit of time. Generally, you should aim for maximal throughput with acceptable latency.
-
-
+Sharding distributes data across different databases such that each database only manages a subset of the data. Common ways to shard a table of users is either through the user's last name initial or the user's geographic location. This results in divided and paralell read and write traffic, less replication, and more cache hits. Index size is also reduced. If one shard goes down, the other shards are still operational, although you'll want to add some form of replication to avoid data loss. Disadvantages include, data distribution can become lopsided in a shard (a set of power users on a shard could result in increased load to that shard), rebalancing adds additional complexity, and joining data from multiple shards is more complex.
 
 ### ACID Transaction
-ACID is a set of properties of relational database transactions.
+ACID is a set of properties of relational database transactions.<br/>
 Atomicity - Each transaction is all or nothing<br/>
 Consistency - Any transaction will bring the database from one valid state to another<br/>
 Isolation - Executing transactions concurrently has the same results as if the transactions were executed serially<br/>
 Durability - Once a transaction has been committed, it will remain so<br/>
 
-### SQL / NoSQL
-Reasons for SQL:
-
-Structured data
-Strict schema
-Relational data
-Need for complex joins
-Transactions
-Clear patterns for scaling
-More established: developers, community, code, tools, etc
-Lookups by index are very fast
-Reasons for NoSQL:
-
-Semi-structured data
-Dynamic or flexible schema
-Non-relational data
-No need for complex joins
-Store many TB (or PB) of data
-Very data intensive workload
-Very high throughput for IOPS
-Sample data well-suited for NoSQL:
-
-Rapid ingest of clickstream and log data
-Leaderboard or scoring data
-Temporary data, such as a shopping cart
-Frequently accessed ('hot') tables
-Metadata/lookup tables
-
-
 ### Key-Value Database
-A key-value store generally allows for O(1) reads and writes and is often backed by memory or SSD. Data stores can maintain keys in lexicographic order, allowing efficient retrieval of key ranges. Key-value stores can allow for storing of metadata with a value. Key-value stores provide high performance and are often used for simple data models or for rapidly-changing data, such as an in-memory cache layer. Since they offer only a limited set of operations, complexity is shifted to the application layer if additional operations are needed.
+A key-value store generally allows for O(1) reads and writes and is often backed by memory or SSD. Key-value stores provide high performance and are often used for simple data models or for rapidly-changing data, such as an in-memory cache layer. Since they offer only a limited set of operations, complexity is shifted to the application layer if additional operations are needed.
 
 ### Document Database
-A document store is centered around documents (XML, JSON, binary, etc), where a document stores all information for a given object. Document stores provide APIs or a query language to query based on the internal structure of the document itself. Note, many key-value stores include features for working with a value's metadata, blurring the lines between these two storage types. Based on the underlying implementation, documents are organized in either collections, tags, metadata, or directories. Although documents can be organized or grouped together, documents may have fields that are completely different from each other. Some document stores like MongoDB and CouchDB also provide a SQL-like language to perform complex queries. DynamoDB supports both key-values and documents. Document stores provide high flexibility and are often used for working with occasionally changing data.
+A document store is centered around documents (XML, JSON, binary, etc), where a document stores all information for a given object. Some document stores like MongoDB and CouchDB also provide a SQL-like language to perform complex queries. Although documents can be organized or grouped together, documents may have fields that are completely different from each other. Such high flexibility are often utilized for working with occasionally changing data.
 
 ### Column Database
-A wide column store's basic unit of data is a column (name/value pair). A column can be grouped in column families (analogous to a SQL table). Super column families further group column families. You can access each column independently with a row key, and columns with the same row key form a row. Each value contains a timestamp for versioning and for conflict resolution. Google introduced Bigtable as the first wide column store, which influenced the open-source HBase often-used in the Hadoop ecosystem, and Cassandra from Facebook. Stores such as BigTable, HBase, and Cassandra maintain keys in lexicographic order, allowing efficient retrieval of selective key ranges. Wide column stores offer high availability and high scalability. They are often used for very large data sets.
+A wide column store's basic unit of data is a column (name/value pair). A column can be grouped in column families (analogous to a SQL table). Super column families further group column families. You can access each column independently with a row key, and columns with the same row key form a row. Each value contains a timestamp for versioning and for conflict resolution. Google introduced Bigtable as the first wide column store, which influenced the open-source HBase often-used in the Hadoop ecosystem, and Cassandra from Facebook. 
 
 ### Graph Database
-In a graph database, each node is a record and each arc is a relationship between two nodes. Graph databases are optimized to represent complex relationships with many foreign keys or many-to-many relationships. Graphs databases offer high performance for data models with complex relationships, such as a social network. They are relatively new and are not yet widely-used; it might be more difficult to find development tools and resources. Many graphs can only be accessed with REST APIs. Neo4j
-
-### Message queues
-For processing you'd like to perform inline with a request but is too slow, the easiest solution is to create a message queue (for example, RabbitMQ). Message queues allow your web applications to quickly publish messages to the queue, and have other consumers processes perform the processing outside the scope and timeline of the client request.
-
-Dividing work between off-line work handled by a consumer and in-line work done by the web application depends entirely on the interface you are exposing to your users. Generally you'll either:
-
-perform almost no work in the consumer (merely scheduling a task) and inform your user that the task will occur offline, usually with a polling mechanism to update the interface once the task is complete (for example, provisioning a new VM on Slicehost follows this pattern), or
-perform enough work in-line to make it appear to the user that the task has completed, and tie up hanging ends afterwards (posting a message on Twitter or Facebook likely follow this pattern by updating the tweet/message in your timeline but updating your followers' timelines out of band; it's simple isn't feasible to update all the followers for a Scobleizer in real-time).
-
-Message queues have another benefit, which is that they allow you to create a separate machine pool for performing off-line processing rather than burdening your web application servers. This allows you to target increases in resources to your current performance or throughput bottleneck rather than uniformly increasing resources across the bottleneck and non-bottleneck systems.
-
-### MapReduce
-If your large scale application is dealing with a large quantity of data, at some point you're likely to add support for map-reduce, probably using Hadoop, and maybe Hive or HBase.
-Adding a map-reduce layer makes it possible to perform data and/or processing intensive operations in a reasonable amount of time. You might use it for calculating suggested users in a social graph, or for generating analytics reports.
-
-For sufficiently small systems you can often get away with adhoc queries on a SQL database, but that approach may not scale up trivially once the quantity of data stored or write-load requires sharding your database, and will usually require dedicated slaves for the purpose of performing these queries (at which point, maybe you'd rather use a system designed for analyzing large quantities of data, rather than fighting your database).
-
-### HTTP Caching
-
-### Reverse Proxy
-
-### Platform layer
-platform layer, such that your web applications communicate with a platform layer which in turn communicates with your databases.
-First, separating the platform and web application allow you to scale the pieces independently. If you add a new API, you can add platform servers without adding unnecessary capacity for your web application tier. (Generally, specializing your servers' role opens up an additional level of configuration optimization which isn't available for general purpose machines; your database machine will usually have a high I/O load and will benefit from a solid-state drive, but your well-configured application server probably isn't reading from disk at all during normal operation, but might benefit from more CPU.)
-
-Second, adding a platform layer can be a way to reuse your infrastructure for multiple products or interfaces (a web application, an API, an iPhone app, etc) without writing too much redundant boilerplate code for dealing with caches, databases, etc.
-
-Third, a sometimes underappreciated aspect of platform layers is that they make it easier to scale an organization. At their best, a platform exposes a crisp product-agnostic interface which masks implementation details. If done well, this allows multiple independent teams to develop utilizing the platform's capabilities, as well as another team implementing/optimizing the platform itself.
-
-### CDN
-A content delivery network (CDN) is a globally distributed network of proxy servers, serving content from locations closer to the user. Generally, static files such as HTML/CSS/JS, photos, and videos are served. CDNs improve performance in two ways: Users receive content at data centers close to them. Your servers do not have to serve requests that the CDN fulfills. In a typical CDN setup, a request will first ask your CDN for a piece of static media, the CDN will serve that content if it has it locally available. If it isn't available, the CDN will query your servers for the file and then cache it locally and serve it to the requesting user.
-
-### Read-Heavy/Write-Heavy System
+In a graph database, each node is a record and each arc is a relationship between two nodes. Graph databases are optimized to represent complex relationships with many foreign keys or many-to-many relationships. Graphs databases offer high performance for data models with complex relationships, such as a social network. Neo4j is a famous example.
 
 ## Programming Language
 
