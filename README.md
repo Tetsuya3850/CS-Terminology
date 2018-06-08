@@ -245,6 +245,8 @@ d; // [1, 2, 3, 4]
 ### Garbage Collection
 Garbage Collection is the process of finding data objects in a running program that cannot be accessed in the future, and to reclaim the resources, particulary memory, used by those objects. In Java, C#, Python and many other languages, garbage collection happens automatically. In contrast, in writing C, the programmer is responsible to know when to allocate and deallocate memory.
 
+### Compile
+Compiling is the process of transforming a computer program written in a given language into an equivalent program of another language. A compiler is a software to execute this task. Usually, a compiler transforms a higher-level language such as C or Java, which humans understand, into a machine language, such as assembly, that the CPU can understand. Some compilers which translate between similar level languages are called transpilers or cross-compilers, for instance to compile from TypeScript to JavaScript. 
 
 ## Web Programming
 
