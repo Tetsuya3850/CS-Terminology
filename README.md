@@ -129,6 +129,9 @@ In a graph database, each node is a record and each arc is a relationship betwee
 ### Class
 Class is a template definition (blueprint) of an object's properties and methods.
 
+### Constructor
+A constructor runs when a class object is instantiated. It initializes the object.
+
 ### Inheritance
 Pub common code in a class and then tell other more specific classes that the common class is their superclass. An inheritance relationship means that the subclass inherits the members of the superclass such as instance variables and methods. Avoids duplicating code in subclasses. If class B extends class A, class B IS-A class A. When you need to modify a behavior common to a group of classes, just update the superclass and the change is reflected in all subclasses.
 
@@ -234,7 +237,7 @@ Garbage Collection is the process of finding data objects in a running program t
 ## Web Programming
 
 ### DOM
-The Document Object Model is a platform- and language-neutral interface that will allow programs and scripts to dynamically access and update the content, structure and style of documents. The DOM represents the document as nodes and objects.
+The Document Object Model is an api that will allow programs to dynamically access and update the content, structure and style of documents. The DOM represents the document as a node tree.
 
 ### Cross Browser Testing
 Use caniuse.com to check for feature support.<br/>
