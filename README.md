@@ -301,5 +301,3 @@ A promise is an synchronously returned object from an asynchronous function that
 
 ### Asynchronous programming
 Asynchronous programming means that the engine runs in an event loop. When a blocking operation is needed, the request is started, and the code keeps running without blocking for the result. When the response is ready, an interrupt is fired, which causes an event handler to be run, where the control flow continues. In this way, a single program thread can handle many concurrent operations.
-
-
