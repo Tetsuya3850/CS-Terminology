@@ -133,16 +133,19 @@ In a graph database, each node is a record and each arc is a relationship betwee
 ## Object Oriented Programming
 
 ### Object
-A model of something defined by their state and behavior. For example,  dogs have state (name, color, breed, hungry) and behavior (barking, fetching, wagging tail).
+A model of something defined by their state and behavior. For example, dogs have state (name, color, breed, hungry) and behavior (barking, fetching, wagging tail). The behavior defines their interaction with others.
 
 ### Class
-Class is a template definition (blueprint) of an object.
+Class is a template definition (blueprint) of an object. Object is an instance of the class.
+
+### Interface
+Interface is a group of related methods with empty bodies.
 
 ### Constructor
 A constructor runs when a class object is instantiated. It initializes the object.
 
 ### Inheritance
-Pub common code in a class and then tell other more specific classes that the common class is their superclass. An inheritance relationship means that the subclass inherits the members of the superclass such as instance variables and methods. Avoids duplicating code in subclasses. If class B extends class A, class B IS-A class A. When you need to modify a behavior common to a group of classes, just update the superclass and the change is reflected in all subclasses.
+To get commonly used state and behavior from other classes. Bicycle is the superclass of MountainBike, RoadBike, and TandemBike (IS-A relation). This avoids code duplication. Interfaces form a contract between the class and the outside world, and this contract is enforced at build time by the compiler. If your class claims to implement an interface, all methods defined by that interface must appear in its source code before the class will successfully compile.
 
 ### Encapsulation
 To hide instance variables (make it private) and restrict access only by public getters and setters. Getters return instance variables, while setters receive an argument value and use it to set the value of an instance variable. By adding check condition to the setter, we could ensure the instance variable stays appropriate.
