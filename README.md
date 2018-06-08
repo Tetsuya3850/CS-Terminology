@@ -22,7 +22,7 @@ CORS (Cross-Origin Resource Sharing) is a mechanism that uses additional HTTP he
 Cookie is a small piece of data that a server sends to the user's web browser. The browser may store it and send it back with the next request to the same server. It remembers stateful information for the stateless HTTP protocol. Cookies are mainly used for session management (logins, shopping carts, game scores), personalization(user preferences and themes), and tracking(recording and analyzing user behavior).
 
 ### UDP
-UDP (User datagram protocol), contrast to TCP do not support congestion control (make sure all packets arrive and is in order) and therefore is less reliable but more efficient. Use UDP over TCP when you need the lowest latency and late data is worse than loss of data. Examples are real time use cases such as VoIP, video chat, streaming, and realtime multiplayer games.
+UDP (User Datagram Protocol), contrast to TCP, do not support congestion control (make sure all packets arrive and is in order) and connectionless (no need to establish connection prior to data transfer). Therefore, it is less reliable but more efficient. Use UDP over TCP when you need the lowest latency and late data is worse than loss of data. Examples are real time use cases such as VoIP, video chat, streaming, and realtime multiplayer games.
 
 ### Bandwidth/Throuhput/Latency
 Bandwidth: Maximum amount of data that can be transferred in a unit of time. Typically expressed in bits per second.<br/>
