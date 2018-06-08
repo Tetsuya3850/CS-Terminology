@@ -203,6 +203,9 @@ baz(); // 2
 ### Type
 A type is an intrinsic, built-in set of characteristics that uniquely identifies the behavior of a particular value and distinguishes it from other values, both to the engine and to the developer.
 
+### Function Signature
+A function signature defines input, output, exceptions and availability of functions.
+
 ### Value copy / Reference copy
 Primitives are always assigned/passed by value-copy: null, undefined, string, number, boolean, and ES6's symbol.<br/>
 Compound values (object and functions) always create a copy of the reference on assignment or passing.
