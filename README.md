@@ -251,6 +251,10 @@ Garbage Collection is the process of finding data objects in a running program t
 ### DOM
 The Document Object Model is an api that will allow programs to dynamically access and update the content, structure and style of documents. The DOM represents the document as a node tree.
 
+### Graceful Degradation/Progressive Enhancement
+Graceful degradation is a design philosophy that centers around trying to build a modern web site/application that will work in the newest browsers, but fall back to an experience that while not as good still delivers essential content and functionality in older browsers.<br/>
+Progressive enhancement is a design philosophy that centers around providing a baseline of essential content and functionality to as many users as possible, while at the same time going further and delivering the best possible experience only to users of the most modern browsers that can run all the required code.
+
 ### Cross Browser Testing
 Use caniuse.com to check for feature support.<br/>
 Autoprefixer for automatic vendor prefix insertion.<br/>
