@@ -180,6 +180,35 @@ A thread is a single sequence stream within in a process. Threads are popular wa
 
 ## Concurrency
 
+### Race Condition
+A race condition occurs when two or more threads can access shared data and they try to change it at the same time. Because the thread scheduling algorithm can swap between threads at any time, you don't know the order in which the threads will attempt to access the shared data. Therefore, the result of the change in data is dependent on the thread scheduling algorithm, i.e. both threads are "racing" to access/change the data.
+
+Problems occurs typically when one thread does a "check-then-act" (e.g. "check" if the value is X, then "act" to do something that depends on the value being X) and another thread does something to the value in between the "check" and the "act". E.g:
+
+```
+if (x == 5) // The "Check"
+{
+   y = x * 2; // The "Act"
+
+   // If another thread changed x in between "if (x == 5)" and "y = x * 2" above,
+   // y will not be equal to 10.
+}
+```
+
+The point being, y could be 10, or it could be anything, depending on whether another thread changed x in between the check and act. You have no real way of knowing.
+
+In order to prevent race conditions from occurring, you would typically put a lock around the shared data to ensure only one thread can access the data at a time (synchronization). This would mean something like this:
+
+```
+// Obtain lock for x
+if (x == 5)
+{
+   y = x * 2; // Now, nothing can change x until the lock is released. 
+              // Therefore y = 10
+}
+// release lock for x
+```
+
 ### Deadlock
 Deadlock is a situation when two or more processes wait for each other to finish and none of them ever finish. This happens in OS when for example, Process 1 is holding Resource 1 and waiting for resource 2 which is acquired by process 2, and process 2 is waiting for resource 1. Deadlock is handled by either prevention, detection and recovery, or ignore and reboot. Some strategies to avoid such situations include, requiring process to declare upfront what locks it will need and see each locks as a graph node and check whether a cycle exists or have a global ordering on locks and acquire them in that order.
 
