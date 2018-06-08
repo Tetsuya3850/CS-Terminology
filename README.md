@@ -132,8 +132,11 @@ In a graph database, each node is a record and each arc is a relationship betwee
 
 ## Object Oriented Programming
 
+### Object
+A model of something defined by their state and behavior. For example,  dogs have state (name, color, breed, hungry) and behavior (barking, fetching, wagging tail).
+
 ### Class
-Class is a template definition (blueprint) of an object's properties and methods.
+Class is a template definition (blueprint) of an object.
 
 ### Constructor
 A constructor runs when a class object is instantiated. It initializes the object.
