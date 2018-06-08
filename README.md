@@ -22,7 +22,7 @@ CORS (Cross-Origin Resource Sharing) is a mechanism that uses additional HTTP he
 Cookie is a small piece of data that a server sends to the user's web browser. The browser may store it and send it back with the next request to the same server. It remembers stateful information for the stateless HTTP protocol. Cookies are mainly used for session management (logins, shopping carts, game scores), personalization(user preferences and themes), and tracking(recording and analyzing user behavior).
 
 ### UDP
-UDP (User Datagram Protocol), contrast to TCP, do not support congestion control (make sure all packets arrive and is in order) and connectionless (no need to establish connection prior to data transfer). Therefore, it is less reliable but more efficient. Use UDP over TCP when you need the lowest latency and late data is worse than loss of data. Examples are real time use cases such as VoIP, video chat, streaming, and realtime multiplayer games.
+UDP (User Datagram Protocol), contrast to TCP, do not support congestion control (make sure all packets arrive and is in order) and connectionless (no need to establish connection prior to data transfer). Therefore, it is less reliable but more efficient. Use UDP over TCP when you need the lowest latency and late data is worse than loss of data. Examples are real time use cases such as VoIP (transmit voice messages over IP such as Skype), video chat, streaming, and realtime multiplayer games.
 
 ### Bandwidth/Throuhput/Latency
 Bandwidth: Maximum amount of data that can be transferred in a unit of time. Typically expressed in bits per second.<br/>
@@ -125,6 +125,9 @@ A wide column store's basic unit of data is a column (name/value pair). A column
 In a graph database, each node is a record and each arc is a relationship between two nodes. Graph databases are optimized to represent complex relationships with many foreign keys or many-to-many relationships. Graphs databases offer high performance for data models with complex relationships, such as a social network. Neo4j is a famous example.
 
 ## Object Oriented Programming
+
+### Class
+Class is a template definition (blueprint) of an object's properties and methods.
 
 ### Inheritance
 Pub common code in a class and then tell other more specific classes that the common class is their superclass. An inheritance relationship means that the subclass inherits the members of the superclass such as instance variables and methods. Avoids duplicating code in subclasses. If class B extends class A, class B IS-A class A. When you need to modify a behavior common to a group of classes, just update the superclass and the change is reflected in all subclasses.
