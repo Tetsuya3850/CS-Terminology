@@ -29,6 +29,9 @@ Bandwidth: Maximum amount of data that can be transferred in a unit of time. Typ
 Throughput: Actual amount of data that is transferred in a unit of time.<br/>
 Latency: How long it takes data to go from one end to the other.<br/>
 
+### SSL/TLS/HTTPS
+SSL (Secure Sockets Layer) is the standard encryption technology for keeping an internet connection secure and safeguarding any sensitive data that is being sent between two systems, preventing criminals from reading and modifying any information. TLS (Transport Layer Security) is an updated, more secure successor version of SSL. HTTPS (Hyper Text Transfer Protocol Secure) appears in the URL when a website is secured by an SSL certificate.
+
 ## System Design
 
 ### Horizontal/Vertical Scaling
