@@ -63,7 +63,7 @@ Reliability is a function of the probability that the system is operational for 
 If read-heavy, consider caching. If write-heavy, consider queuing up the writes.
 
 ### Load Balancing
-Load balancing is the process of spreading requests across multiple resources according to some metric (random, round-robin, session/cookies, random with weighting for machine capacity, etc) and their current status (available for requests, not responding, elevated error rate, etc) to achieve scalability and redundancy. A moderately large system may balance load at three layers, user to web servers, web servers to an internal platform layer, internal platform layer to database. Load balancers can be implmented with hardware or software, but the hardware tends to be costly. One software solution is HAProxy. Load balancing is implemented by configuring a locally bound port for each service. Additional benefits of load balancers include, SSL termination (Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), session persistence (issue cookies and route a specific client's requests to same instance if the web apps do not keep track of sessions). To protect against failures, it's common to set up multiple load balancers.
+Load balancing is the process of spreading requests across multiple resources according to some metric (random, round-robin, session/cookies, random with weighting for machine capacity, etc) and their current status (available for requests, near capacity, not responding, elevated error rate, etc) to achieve scalability and redundancy (if one server in a cluster of servers fail, the load balancer can temporarily remove that server from the cluster, and divide the load onto the functioning servers). A moderately large system may balance load at three layers, user to web servers, web servers to an internal platform layer, internal platform layer to database. Load balancers can be implmented with hardware or software, but the hardware tends to be costly. One software solution is HAProxy. Load balancing is implemented by configuring a locally bound port for each service. Additional benefits of load balancers include, SSL termination (Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations), session persistence (issue cookies and route a specific client's requests to same instance). To not introduce another single point of failure, it is common to set up multiple load balancers.
 
 ### Reverse Proxy
 A reverse proxy is a web server that centralizes internal services and provides unified interfaces to the public. Requests from clients are forwarded to a server that can fulfill it by the proxy. Additional benefits include, increased security (hide information about backend servers, blacklist IPs, limit number of connections per client), increased scalability and flexibility (clients only see the reverse proxy's IP, allowing you to scale servers or change their configuration), SSL termination (decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations). Load balancing solutions such as HAProxy can support reverse proxying as well.
@@ -158,6 +158,23 @@ Code reuse should be achieved by assembling smaller units of functionality inste
 
 ### MVC
 The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
+
+## Hardware
+
+### CPU
+The CPU (Central Processing Unit) is what executes all the instructions. The faster the CPU is, the the faster the computer can execute instructions. Some CPUs have multiple cores. Each core functions like a separate CPU which can execute instructions independently, regardless of what the other cores are doing. 
+
+### RAM
+The RAM (Random Access Memory) can store both instructions for the CPU to execute, and the data these instructions are processing. The more memory a computer has, the more data and instructions it can store. The RAM is normally cleared when the computer is shut down or rebooted. It is typically not a permanent storage. Having a lot of memory in a computer is useful when caching data which normally reside on disk, or which is read from a remote system via the network.
+
+### Disk Drives
+The disk drives can store data just like the RAM, but unlike the RAM the data is saved even when the computer shuts down. The disk drives are often much slower than RAM to access, so if you need to process big amounts of data, it is preferable to keep that data in RAM.
+
+### NIC
+The NIC (Network Interface Card) connects the computer to a network. This enables the computer to communicate with other computers, for instance via the internet. 
+
+### Bus
+The Bus connects the CPU to the RAM, disk drives and NIC.
 
 ## Operating System
 
