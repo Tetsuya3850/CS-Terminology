@@ -32,9 +32,6 @@ Latency: How long it takes data to go from one end to the other.<br/>
 ### SSL/TLS/HTTPS
 SSL (Secure Sockets Layer) is the standard encryption technology for keeping an internet connection secure and safeguarding any sensitive data that is being sent between two systems, preventing criminals from reading and modifying any information. TLS (Transport Layer Security) is an updated, more secure successor version of SSL. HTTPS (Hyper Text Transfer Protocol Secure) appears in the URL when a website is secured by an SSL certificate.
 
-### WebSocket 
-WebSocket is a protocol that allows for a persistent TCP connection between server and client so they can exchange data at any time. Through WebSocket, servers can pass data to a client without prior client request, allowing for dynamic content updates.
-
 ### Serialization
 The process whereby an object or data structure is translated into a format suitable for transferral over a network, or storage (e.g. in an array buffer or file format).
 
@@ -83,6 +80,12 @@ In active-active, both servers are managing traffic, spreading the load between 
 
 ### MapReduce
 Map takes in some data and emits a <key, value> pair. Reduce takes a key and a set of associated values and reduces them in someway, emitting a new key and value. MapReduce allows a lot of processing to be done in parellel which makes processing huge amounts of data more scalable.
+
+### HTTP Long-Polling
+Long-Polling is a variation of the traditional polling technique that allows the server to push information to a client, whenever the data is available. With Long-Polling, the client requests information from the server exactly as in normal polling, but with the expectation that the server may not respond immediately. If the server does not have any data available for the client, instead of sending an empty response, the server holds the request and waits until some data becomes available. Once the data becomes available, a full response is sent to the client. The client then immediately re-request information from the server so that the server will almost always have an available waiting request that it can use to deliver data in response to an event.
+
+### WebSocket 
+WebSocket is a protocol that allows for a persistent TCP connection between server and client so they can exchange data at any time. Through WebSocket, servers can pass data to a client without prior client request, allowing for dynamic content updates.
 
 ## Database
 
