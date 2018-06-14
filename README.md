@@ -84,8 +84,8 @@ Map takes in some data and emits a <key, value> pair. Reduce takes a key and a s
 ### HTTP Long-Polling
 Long-Polling is a variation of the traditional polling technique that allows the server to push information to a client, whenever the data is available. With Long-Polling, the client requests information from the server exactly as in normal polling, but with the expectation that the server may not respond immediately. If the server does not have any data available for the client, instead of sending an empty response, the server holds the request and waits until some data becomes available. Once the data becomes available, a full response is sent to the client. The client then immediately re-request information from the server so that the server will almost always have an available waiting request that it can use to deliver data in response to an event.
 
-### WebSocket 
-WebSocket is a protocol that allows for a persistent TCP connection between server and client so they can exchange data at any time. Through WebSocket, servers can pass data to a client without prior client request, allowing for dynamic content updates.
+### WebSocket
+WebSocket provides full duplex communication channels over a single TCP connection. It provides a persistent connection between a client and a server that both parties can use to start sending data at any time. The WebSocket protocol enables real-time data transfer between the client and the server. 
 
 ## Database
 
