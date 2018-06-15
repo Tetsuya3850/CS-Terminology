@@ -109,7 +109,7 @@ Sharding distributes data across different databases such that each database onl
 Indexes are used to improve the speed of data retrieval operations on the data store. An index makes the trade-offs of increased storage overhead, and slower writes (since we not only have to write the data but also have to update the index) for the benefit of faster reads. Indexes are used to quickly locate data without having to examine every row in a database table. It can be created using one or more columns of a database table. An index is a data structure that can be perceived as a table of contents that points us to the location where actual data lives.
 
 ### Relational Database
-A relational database is a set of tables. Each table consists of rows. A row is a set of columns, which could be of various types. The database schema must be predefined. Any changes in schema necessitates a migration procedure that can take the database offline or significantly reduce application performance. SQL is the language used to create and manipulate such databases. A key benefit of relational databases include support for ACID(Atomicity, Consistency, Isolation, Durability) transactions.
+A relational database is a set of tables. Each table consists of rows and columns. Each row contains all the information about one entity, and columns are all the separate data points. The database schema must be predefined. Any changes in schema necessitates a migration procedure that can take the database offline or significantly reduce application performance. SQL is the language used to create and manipulate such databases. A key benefit of relational databases include support for ACID(Atomicity, Consistency, Isolation, Durability) transactions.
 
 ### ACID Transaction
 ACID is a set of properties of relational database transactions.<br/>
@@ -130,16 +130,16 @@ Rgith Outer Join: The result will contain all records from the right table regar
 Full Outer Join: The result will contain all records from both the left and right table regardless of match.<br/>
 
 ### Key-Value Database
-A key-value store generally allows for O(1) reads and writes and is often backed by memory or SSD. Key-value stores provide high performance and are often used for simple data models or for rapidly-changing data, such as an in-memory cache layer. Since they offer only a limited set of operations, complexity is shifted to the application layer if additional operations are needed.
+A key-value store is an array of key-value pairs. It generally allows for O(1) reads and writes and is often backed by memory or SSD. Key-value stores provide high performance and are often used for simple data models or for rapidly-changing data, such as an in-memory cache layer. Since they offer only a limited set of operations, complexity is shifted to the application layer if additional operations are needed. Well-known key value stores include Redis and Dynamo.
 
 ### Document Database
 A document store is centered around documents (XML, JSON, binary, etc), where a document stores all information for a given object (data is represented in the same way that applications do). This minimizes expensive joins and makes it easier for developers to reason about the data. Some document stores like MongoDB and CouchDB also provide a SQL-like language to perform complex queries. Although documents can be organized or grouped together, documents may have fields that are completely different from each other. Such high flexibility are often utilized for working with occasionally changing requirements and data.
 
 ### Column Database
-A wide column store's basic unit of data is a column (name/value pair). A column can be grouped in column families (analogous to a SQL table). Super column families further group column families. You can access each column independently with a row key, and columns with the same row key form a row. Each value contains a timestamp for versioning and for conflict resolution. Google introduced Bigtable as the first wide column store, which influenced the open-source HBase often-used in the Hadoop ecosystem, and Cassandra from Facebook. 
+A wide column store's basic unit of data is a column (name/value pair). A column can be grouped in column families (analogous to a SQL table). Super column families further group column families. You can access each column independently with a row key, and columns with the same row key form a row. Each value contains a timestamp for versioning and for conflict resolution. Google introduced Bigtable as the first wide column store, which influenced HBase and Cassandra. 
 
 ### Graph Database
-In a graph database, each node is a record and each arc is a relationship between two nodes. Graph databases are optimized to represent complex relationships with many foreign keys or many-to-many relationships. Graphs databases offer high performance for data models with complex relationships, such as a social network. Neo4j is a famous example.
+In a graph database, each node is a record and each arc is a relationship between two nodes. Graph databases are optimized to represent complex relationships with many foreign keys or many-to-many relationships. Graphs databases offer high performance for data models with complex relationships, such as a social network. An example of graph database is Neo4J.
 
 ## Object Oriented Programming
 
