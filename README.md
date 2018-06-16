@@ -99,6 +99,9 @@ Master-Slave: The master serves reads and writes, replicating writes to one or m
 Master-Master: Both masters serve reads and writes and coordinate with each other on writes. If either master goes down, the system can continue to operate with both reads and writes. Most master-master systems are either loosely consistent (violating ACID) or have increased write latency due to synchronization.<br/>
 Disadvantages of replication include, potential loss of data if the master fails before any newly written data can be replicated to other nodes, read replicas getting bogged down with replaying writes and can't do as many reads when there a lot of writes, and many read slaves leading to greater replication lag.
 
+### Consistent Hashing
+In the consistent hashing scheme, the key space is finite and lie on the circumference of a ring. The virtual node id is also allocated from the same key space. For any key, its owner node is defined as the first encountered virtual node if walking clockwise from that key. If the owner node crashes, all the key it owns will be adopted by its clockwise neighbor. Therefore, key redistribution happens only within the neighbor of the crashed node, all other nodes retains the same set of keys.
+
 ### Federation
 Federation (or functional partitioning) splits up databases by function. For example, instead of a single, monolithic database, you could have three databases: forums, users, and products, resulting in divided and parallel read and write traffic to each database and therefore improving performance. Disadvantages include the necessity to update application logic to determine which database to read and write and joining data from two databases becoming more complex with a server link.
 
