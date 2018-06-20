@@ -216,6 +216,11 @@ A process is an instance of program in execution. A process can be divided into 
 ### Thread
 A thread is a single sequence stream within in a process. Threads are popular way to improve application through parallelism. For example, in a browser, multiple tabs can be different threads. MS word uses multiple threads, one thread to format the text, other thread to process inputs, etc. A thread has its own program counter, a register set, and a stack space. Threads are not independent of one other like processes as a result threads shares with other threads their code section, data section and OS resources like open files and signals. 
 
+### Virtualization
+Virtuallization is to run an operating system within another operating system. Benefits include, being able to test applications on a different OS, use software that only runs on a particular OS.
+
+### Container
+
 ## Concurrency
 
 ### Race Condition
