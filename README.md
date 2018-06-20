@@ -220,6 +220,7 @@ A thread is a single sequence stream within in a process. Threads are popular wa
 Virtuallization is to run an operating system within another operating system. Benefits include, being able to test applications on a different OS, use software that only runs on a particular OS.
 
 ### Container
+Isolation of a process
 
 ## Concurrency
 
