@@ -81,7 +81,7 @@ A content delivery network (CDN) is a globally distributed network of proxy serv
 Separating out the web layer from the application layer (or platform layer) has multiple benefits. First, specializing servers' role allows you to configure and sacle independently, based on their characteristics. Second, adding a platform layer can be a way to reuse your infrastructure for multiple products or interfaces. Third, they make it easier to scale an organization. Since a platform exposes an interface which masks implementation details, multiple independent teams can develop utilizing the platform's capabilities, as well as another team implementing/optimizing the platform itself.
 
 ### Microservices
-Microservies is a suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal. Systems such as Consul, Etcd, and Zookeeper can help services find each other by keeping track of registered names, addresses, and ports.
+Microservies is a suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal. Systems such as Consul, Etcd, and Zookeeper can help services find each other by keeping track of registered names, addresses, and ports. Small teams could iterate fast in their own language of choice.
 
 ### Asynchronism
 Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. One example is a Message queue. First, an application publishes a job to the queue. Jobs could represent a simple write to a database, or generating a thumbnail preview image for a document. Then, a worker picks up the job from the queue, processes it, then signals the job is complete. The user is not blocked and the job is processed in the background. During this time, the client might optionally do a small amount of processing to make it seem like the task has completed (posting a tweet, the tweet could be instantly posted to your timeline, but it could take some time before your tweet is actually delivered to all of your followers). Message queues allow you to create a separate machine pool for performing off-line processing rather than burdening your web application servers. RabbitMQ and Amazon SQS are common tools to implement this. Queue sizes becoming larger than memory could result in cache misses, disk reads, and even slower performance. Therefore, limiting the queue size and informing clients that server is busy in such situation is important.
@@ -220,7 +220,7 @@ A thread is a single sequence stream within in a process. Threads are popular wa
 Virtuallization is to run an operating system within another operating system. Benefits include, being able to test applications on a different OS, use software that only runs on a particular OS.
 
 ### Container
-Isolation of a process
+A container is a lightweight, stand-alone, executable package of a piece of software that includes everything needed to run it: code, runtime, system tools, system libraries, settings. Available for both Linux and Windows based apps, containerized software will always run the same, regardless of the environment. Containers isolate software from its surroundings, for example differences between development and staging environments and help reduce conflicts between teams running different software on the same infrastructure.
 
 ## Concurrency
 
