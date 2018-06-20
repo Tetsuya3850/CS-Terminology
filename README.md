@@ -217,10 +217,10 @@ A process is an instance of program in execution. A process can be divided into 
 A thread is a single sequence stream within in a process. Threads are popular way to improve application through parallelism. For example, in a browser, multiple tabs can be different threads. MS word uses multiple threads, one thread to format the text, other thread to process inputs, etc. A thread has its own program counter, a register set, and a stack space. Threads are not independent of one other like processes as a result threads shares with other threads their code section, data section and OS resources like open files and signals. 
 
 ### Virtualization
-Virtuallization is to run an operating system within another operating system. Benefits include, being able to test applications on a different OS, use software that only runs on a particular OS.
+Virtuallization is an abstraction of physical hardware to run an operating system within another operating system. Benefits include, being able to test applications on a different OS, use software that only runs on a particular OS. Disadnvantages include, each virtualization having a full copy of an operating system, one or more apps, necessary binaries and libraries - taking up tens of GBs, and boot being slow.
 
 ### Container
-A container is a lightweight, stand-alone, executable package of a piece of software that includes everything needed to run it: code, runtime, system tools, system libraries, settings. Available for both Linux and Windows based apps, containerized software will always run the same, regardless of the environment. Containers isolate software from its surroundings, for example differences between development and staging environments and help reduce conflicts between teams running different software on the same infrastructure.
+A container is a lightweight, stand-alone, executable package of a piece of software (an abstraction at the app layer) that includes everything needed to run it: code, runtime, system tools, system libraries, settings. Available for both Linux and Windows based apps, containerized software will always run the same, regardless of the environment. Containers isolate software from its surroundings, for example differences between development and staging environments and help reduce conflicts between teams running different software on the same infrastructure. Containers take up less space than VMs (container images are typically tens of MBs in size), and start almost instantly.
 
 ## Concurrency
 
