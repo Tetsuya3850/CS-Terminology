@@ -180,6 +180,8 @@ Code reuse should be achieved by assembling smaller units of functionality inste
 ### MVC
 The Model-View-Controller (MVC) is an architectural pattern that organizes an application into three components: the model, the view, and the controller. The Model corresponds to the data-related logic. The View component is used for all the UI logic. Controllers act as an middle man between Model and View to process incoming requests, manipulate data using the Model component and interact with the Views to render the final output. Ruby on Rails.
 
+Abstract Factory, Factory Method, Adapter, Observer, Composite, Strategy, Decorator, Template Method
+
 ## Hardware
 
 ### CPU
